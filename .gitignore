@@ -1,0 +1,9 @@
+.packages
+.pub/
+.idea/
+doc/
+build/
+pubspec.lock
+
+# Directory created by dartdoc
+doc/api/

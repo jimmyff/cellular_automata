@@ -1,0 +1,20 @@
+name: cellular_automaton
+description: Platform for experimenting with Cellular Automaton
+version: 0.0.1
+#homepage: https://www.example.com
+author: jimmyff <jimmyff@jimmyff.uk>
+
+environment:
+  sdk: '>=1.20.1 <2.0.0'
+
+dependencies:
+#  vector_math: "^2.0.4"
+  stagexl: "^1.2.0+3"
+
+dev_dependencies:
+  browser: ^0.10.0
+  bwu_grinder_tasks: '^0.1.1-dev'
+  dart_to_js_script_rewriter: ^1.0.1
+
+transformers:
+- dart_to_js_script_rewriter
