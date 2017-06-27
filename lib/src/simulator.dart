@@ -20,11 +20,12 @@ class Simulator {
     CellWorld world,
     CARules rules,
     Duration speed,
-    String seed,
+    String generator,
   })
       : _world = world {
-    String _seedGenerator = generators.keys
-        .toList(growable: false)[new math.Random().nextInt(generators.length)];
+    final String _seedGenerator = generator ??
+        generators.keys.toList(
+            growable: false)[new math.Random().nextInt(generators.length)];
 
 //    _seedGenerator = 'sierpinskiMountains';
 
@@ -36,7 +37,7 @@ class Simulator {
     _onTick.add(world);
 
     _rules = rules;
-    initTimer(speed, new Duration(seconds: 1));
+    initTimer(speed, new Duration(seconds: 0));
   }
 
   Future<Null> initTimer(Duration speed, Duration delay) async {

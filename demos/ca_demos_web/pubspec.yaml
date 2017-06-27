@@ -1,7 +1,7 @@
 name: ca_demos_web
 description: Web demos utilising the cellular_automaton lib
-version: 0.0.1
-#homepage: https://www.example.com
+version: 0.0.2
+homepage: https://github.com/jimmyff/cellular_automaton
 author: jimmyff <jimmyff@jimmyff.uk>
 
 environment:
@@ -10,6 +10,8 @@ environment:
 dependencies:
   cellular_automaton:
     path: ../..
+  params: '^0.0.4'
+
 
 dev_dependencies:
   browser: ^0.10.0

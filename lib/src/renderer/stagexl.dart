@@ -1,40 +1,59 @@
 import 'dart:html';
+import 'dart:async';
 import 'package:stagexl/stagexl.dart';
 
+import 'package:cellular_automaton/src/renderer/_ca_renderer.dart';
 import 'package:cellular_automaton/cellular_automaton.dart';
 
+enum StageXLDisplayMode { FULLSCREEN, FIXED }
+
 /// StageXL WebGL renderer for displaying CA on the web
-class StageXLRenderer {
-  final int _width;
-  final int _height;
+class StageXLRenderer extends CARenderer {
+  int _stageWidth;
+  int _stageHeight;
+
+  num _resolutionHeight = 600;
+  num _resolutionWidth = 800;
 
   final CanvasElement _canvas;
   Stage _stage;
+  StageXLDisplayMode _displayMode;
 
-  StageXLRenderer({CanvasElement canvas, CellWorld world})
+  num get width => _stageWidth;
+  num get height => _stageHeight;
+
+  StageXLRenderer(
+      {CanvasElement canvas,
+      CellWorld world,
+      StageXLDisplayMode displayMode,
+      num stageWidth,
+      num stageHeight})
       : _canvas = canvas,
-        _width = world.width,
-        _height = world.height {
+        _stageWidth = stageWidth ?? 128,
+        _stageHeight = stageHeight ?? 128,
+        _displayMode = displayMode {
     // configure StageXL default options.
 
     StageXL.stageOptions.renderEngine = RenderEngine.WebGL;
-    StageXL.stageOptions.backgroundColor = Color.BlueViolet;
+    StageXL.stageOptions.backgroundColor = Color.Black;
 
-    // configure StageXL stage scale mode
-
-    StageXL.stageOptions.stageScaleMode = StageScaleMode.SHOW_ALL;
-    //StageXL.stageOptions.stageScaleMode = StageScaleMode.EXACT_FIT;
-    //StageXL.stageOptions.stageScaleMode = StageScaleMode.NO_BORDER;
-    //StageXL.stageOptions.stageScaleMode = StageScaleMode.NO_SCALE;
-
-    // configure StageXL stage align
+    // handle resize events...
+    switch (_displayMode) {
+      case StageXLDisplayMode.FIXED:
+        StageXL.stageOptions.stageScaleMode = StageScaleMode.SHOW_ALL;
+        break;
+      case StageXLDisplayMode.FULLSCREEN:
+        StageXL.stageOptions.stageScaleMode = StageScaleMode.EXACT_FIT;
+        break;
+    }
 
     StageXL.stageOptions.stageAlign = StageAlign.NONE;
-    //StageXL.stageOptions.stageAlign = StageAlign.TOP_LEFT;
 
     // init Stage and RenderLoop
 
-    _stage = new Stage(_canvas, width: _width, height: _height);
+    _stage = new Stage(_canvas, width: width, height: height);
+
+    print('Stage XL setup: ${width}x${height}');
 
     var renderLoop = new RenderLoop();
     renderLoop.addStage(_stage);
@@ -50,11 +69,11 @@ class StageXLRenderer {
     backgroundGrid.addTo(_stage);
 
     backgroundGrid.graphics.beginPath();
-    backgroundGrid.graphics.rect(0, 0, _width, _height);
+    backgroundGrid.graphics.rect(0, 0, width, height);
     backgroundGrid.graphics.fillColor(Color.DarkViolet);
 
-    num cellWidth = (_width / world.width);
-    num cellHeight = (_height / world.height);
+    num cellWidth = (width / world.width);
+    num cellHeight = (height / world.height);
 
     for (num x = 0; x < world.width; x++) {
       for (num y = 0; y < world.height; y++) {
