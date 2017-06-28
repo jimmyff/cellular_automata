@@ -9,50 +9,62 @@ import 'package:params/client.dart';
 import 'package:cellular_automaton/cellular_automaton.dart';
 import 'package:cellular_automaton/renderer_stagexl.dart';
 import 'package:cellular_automaton/rules.dart';
+import 'package:stagexl/src/ui/color.dart';
 
-
-void startSimulation ({
-  CARules rules,
-  num worldWidth,
-  num worldHeight,
-  num stageWidth,
-  num stageHeight,
-  num speed_ms,
-  String generator,
-  StageXLDisplayMode displayMode,
-  CanvasElement canvas
-}) {
-
-  final world = new CellWorld(
+// Fully featured example of using cellular_automaton
+void startSimulation(
+    {CARules rules,
+    num worldWidth,
+    num worldHeight,
+    num stageWidth,
+    num stageHeight,
+    num speed_ms,
+    String generator,
+    StageXLDisplayMode displayMode,
+    CanvasElement canvas}) {
+  final world = new CellWorld<GameOfLifeStates>(
       width: worldWidth,
-      height: worldHeight
-  );
-
-  final display = new StageXLRenderer(
-    canvas: canvas,
-    world: world,
-    displayMode: displayMode,
-    stageWidth: stageWidth,
-    stageHeight: stageHeight,
-    palette: rules.defaultPalette
-  );
-
+      height: worldHeight,
+      defaultState: GameOfLifeStates.DEAD);
 
   final sim = new Simulator(
       world: world,
       rules: rules,
-      speed: new Duration(milliseconds: speed_ms),
-      generator: generator
-  );
+      generationDuration: new Duration(milliseconds: speed_ms),
+      generator: new MathematicalGenerator<GameOfLifeStates>(
+          type: MathematicalGenerators.RANDOM,
+          valueTrue: GameOfLifeStates.ALIVE_BORN,
+          valueFalse: GameOfLifeStates.DEAD));
 
-  sim.onTick.listen((CellWorld world) => display.render(world));
+  final renderer = new StageXLRenderer(
+      canvas: canvas,
+      displayMode: displayMode,
+      stageWidth: stageWidth,
+      stageHeight: stageHeight);
+
+  // render loop (wire the simulation & renderer together)
+  sim.onRender.listen((CellWorld world) {
+    // render the cell world state
+    renderer.render(world.applyPalette<int>(
+        changesOnly: true,
+        palette: new Map<GameOfLifeStates, int>.from({
+          GameOfLifeStates.DEAD: Color.Blue,
+          GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
+          GameOfLifeStates.DEAD_OVER_POPULATED: Color.BlueViolet,
+          GameOfLifeStates.ALIVE: Color.Yellow,
+          GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
+        })));
+  });
+
+  sim.start();
 }
 
 // Process the input parameteres
 void _initSimulation([dynamic _]) {
-  num worldWidth = params['width']!=null?int.parse(params['width']):null;
-  num worldHeight = params['height']!=null?int.parse(params['height']):null;
-  num speedMs = params['speed_ms']!=null?int.parse(params['speed_ms']):50;
+  num worldWidth = params['width'] != null ? int.parse(params['width']) : null;
+  num worldHeight =
+      params['height'] != null ? int.parse(params['height']) : null;
+  num speedMs = params['speed_ms'] != null ? int.parse(params['speed_ms']) : 50;
   num stageWidth;
   num stageHeight;
 
@@ -76,15 +88,15 @@ void _initSimulation([dynamic _]) {
       displayMode = StageXLDisplayMode.FULLSCREEN;
       stageWidth = window.innerWidth;
       stageHeight = window.innerHeight;
-      worldWidth = (stageWidth/renderSize).round();
-      worldHeight = (stageHeight/renderSize).round();
+      worldWidth = (stageWidth / renderSize).round();
+      worldHeight = (stageHeight / renderSize).round();
       bodyClass = 'stage-full-window';
       break;
     case 'fixed':
     default:
       displayMode = StageXLDisplayMode.FIXED;
-      stageWidth = worldWidth*renderSize;
-      stageHeight = worldHeight*renderSize;
+      stageWidth = worldWidth * renderSize;
+      stageHeight = worldHeight * renderSize;
       bodyClass = 'stage-fixed-size';
   }
 
@@ -101,18 +113,12 @@ void _initSimulation([dynamic _]) {
       speed_ms: speedMs,
       canvas: querySelector('#stage')
         ..style.width = '${stageWidth}px'
-        ..style.height ='${stageHeight}px'
-  );
-
-
+        ..style.height = '${stageHeight}px');
 }
 
-
-  Future<Null> main() async {
-
+Future<Null> main() async {
   // load the request parameters
   await initParams();
   _initSimulation();
   window.onResize.listen(_initSimulation);
-
 }

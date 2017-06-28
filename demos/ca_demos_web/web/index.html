@@ -10,27 +10,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="simple_example.dart" type="application/dart"></script>
+    <script defer src="packages/browser/dart.js"></script>
     <title>Cellular Automaton web examples</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            line-height:1.6em;
-            padding:2em;
-            font-size:90%;
-            color:#333;
-            background: #fff;
-        }
-        a {
-            color:rebeccapurple;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <h1>Cellular Automaton Demos</h1>
-    <p>cellular_automaton is a dart library for exploring cellular automaton, for more information visit the project page: <a href="https://github.com/jimmyff/cellular_automaton">https://github.com/jimmyff/cellular_automaton</a></p>
+    <p>cellular_automaton is an open source dart library by <a href="https://github.com/jimmyff">jimmyff</a> for exploring &amp; playing with cellular automaton.</p>
+    <p>Github repository: <a href="https://github.com/jimmyff/cellular_automaton">https://github.com/jimmyff/cellular_automaton</a></p>
+    <p>Pub package: <a href="https://pub.dartlang.org/packages/cellular_automaton">https://pub.dartlang.org/packages/cellular_automaton</a></p>
     <br />
+    <h3>Simple demo</h3>
+    <p>This is a very basic setup playing Conway's game of life.</p>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <br />
+    <h3>More advanced demos</h3>
     <ul>
         <li>Conway's Game of Life</li>
         <ul>

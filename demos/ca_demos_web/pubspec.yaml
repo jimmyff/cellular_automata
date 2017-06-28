@@ -1,6 +1,6 @@
 name: ca_demos_web
 description: Web demos utilising the cellular_automaton lib
-version: 0.0.2
+version: 0.1.0
 homepage: https://github.com/jimmyff/cellular_automaton
 author: jimmyff <jimmyff@jimmyff.uk>
 
@@ -16,6 +16,7 @@ dependencies:
 dev_dependencies:
   browser: ^0.10.0
   dart_to_js_script_rewriter: ^1.0.1
+  bwu_grinder_tasks: '^0.1.1-dev'
 
 transformers:
 - dart_to_js_script_rewriter

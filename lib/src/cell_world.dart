@@ -2,72 +2,95 @@ import 'package:cellular_automaton/cellular_automaton.dart';
 import 'package:cellular_automaton/src/util/array_2d.dart';
 
 /// Stores the world state
-class CellWorld {
-  Array2d<int> _grid;
-  List<Array2d<int>> _history = [];
+class CellWorld<T> {
+  List<Array2d<T>> _generations = [];
 
   bool wrap = true;
-  final int defaultValue = 0;
 
-  int get width => _grid.width;
-  int get height => _grid.height;
+  final T defaultState;
+  final int width;
+  final int height;
 
-  int history(int generations, int x, int y, [Array2d<int> grid]) {
-    if (_history.length < generations) return defaultValue;
-    return state(x, y, _history[_history.length - generations]);
+  /// returns the state of the world a number of generations ago
+  Array2d<T> generation([int ago = 0]) {
+    if (_generations.length < ago) return null;
+    return _generations[_generations.length - 1 - ago];
   }
 
-  int state(int x, int y, [Array2d<int> grid]) {
+  /// sets the state of a cell
+  setState(int x, int y, T newState, [Array2d<T> array2d]) {
+    (array2d ?? generation()).set(x, y, newState);
+  }
+
+  /// returns the state of a cell
+  T getState(int x, int y, [int generationsAgo = 0]) {
     int _x, _y;
 
     if (wrap) {
       _x = x < 0 ? x + width : (x >= width ? x - width : x);
       _y = y < 0 ? y + height : (y >= height ? y - height : y);
     } else {
-      _x = x < 0 || x > (width - 1) ? defaultValue : x;
-      _y = y < 0 || y > (height - 1) ? defaultValue : y;
+      _x = x < 0 || x > (width - 1) ? defaultState : x;
+      _y = y < 0 || y > (height - 1) ? defaultState : y;
     }
-    return (grid ?? _grid).get(_x, _y);
+    return generation(generationsAgo)?.get(_x, _y) ?? defaultState;
   }
 
-  void test() {}
-
-  List<int> getNeighborhood(int x, int y, {String system: 'moore'}) {
+  /// returns neighboring cells
+  List<T> getNeighborhood(int x, int y, {String system: 'moore'}) {
+    // TODO: implement neighboring systems..
     return [
-      state(x - 1, y - 1),
-      state(x, y - 1),
-      state(x + 1, y - 1),
-      state(x - 1, y),
-      state(x + 1, y),
-      state(x - 1, y + 1),
-      state(x, y + 1),
-      state(x + 1, y + 1)
+      getState(x - 1, y - 1),
+      getState(x, y - 1),
+      getState(x + 1, y - 1),
+      getState(x - 1, y),
+      getState(x + 1, y),
+      getState(x - 1, y + 1),
+      getState(x, y + 1),
+      getState(x + 1, y + 1)
     ];
   }
 
-  CellWorld({int width, int height}) {
-    _grid = new Array2d<int>(width ?? 128, height ?? 128);
+  CellWorld({int this.width, int this.height, this.defaultState}) {}
+
+  /// apply a palette to the world state
+  Array2d<T> applyPalette<T>({
+    Map palette,
+    bool changesOnly,
+  }) {
+    final output = new Array2d<T>(width, height);
+
+    // TODO: could optimise by transforming to list?
+//    final output = new Array2d<T>.readonlyFrom(
+//        world.width,
+//        world.generation().toList());
+
+    for (num x = 0; x < width; x++) {
+      for (num y = 0; y < height; y++) {
+        output.set(x, y, palette[getState(x, y)]);
+      }
+    }
+    return output;
   }
 
+  /// Saves the genreation
+  void saveGeneration(Array2d<T> array2d) {
+    _generations.add(array2d);
+    if (_generations.length > 10) _generations.removeRange(0, 1);
+  }
+
+  /// Apply CA Rules on a new generation
   applyRules(CARules rules) {
-    final newGrid = new Array2d(_grid.width, _grid.height);
-
-    _history.add(_grid);
-    if (_history.length > 10) _history.removeRange(0, 1);
-
+    final generation = new Array2d<T>(width, height);
     for (int x = 0; x < width; x++)
       for (int y = 0; y < height; y++)
-        setState(x, y, rules.calculateState(x, y, this), newGrid);
+        setState(x, y, rules.calculateState(x, y, this), generation);
 
-    _grid = newGrid;
+    saveGeneration(generation);
   }
 
-  applyFunction(Function func) {
-    for (int x = 0; x < width; x++)
-      for (int y = 0; y < height; y++) setState(x, y, func(x, y));
-  }
-
-  setState(int x, int y, int value, [Array2d<int> grid]) {
-    (grid ?? _grid).set(x, y, value);
+  /// Apply a generator on a new generation
+  applyGenerator(CAGenerator generator) {
+    saveGeneration(generator.generate(width, height));
   }
 }

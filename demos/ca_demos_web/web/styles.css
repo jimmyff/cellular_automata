@@ -1,3 +1,19 @@
+body {
+  font-family: sans-serif;
+  line-height:1.6em;
+  padding:0.5em 1em;
+  font-size:90%;
+  color:#333;
+  background: #fff;
+}
+h1, h2, h3 {
+  font-weight:bold;
+}
+a {
+  color:rebeccapurple;
+}
+
+
 /* stage-full-window */
 body.stage-full-window { margin: 0; padding: 0; overflow: hidden; }
 body.stage-full-window canvas { width: 100% !important; height: 100% !important;; position:fixed; }
