@@ -5,6 +5,8 @@ import 'package:stagexl/stagexl.dart';
 import 'package:cellular_automaton/src/renderer/_ca_renderer.dart';
 import 'package:cellular_automaton/cellular_automaton.dart';
 
+import 'package:cellular_automaton/rules.dart';
+
 enum StageXLDisplayMode { FULLSCREEN, FIXED }
 
 /// StageXL WebGL renderer for displaying CA on the web
@@ -21,16 +23,19 @@ class StageXLRenderer extends CARenderer {
 
   num get width => _stageWidth;
   num get height => _stageHeight;
+  Map<int, int> _palette;
 
   StageXLRenderer(
       {CanvasElement canvas,
       CellWorld world,
       StageXLDisplayMode displayMode,
       num stageWidth,
-      num stageHeight})
+      num stageHeight,
+      Map<int, int> palette})
       : _canvas = canvas,
         _stageWidth = stageWidth ?? 128,
         _stageHeight = stageHeight ?? 128,
+        _palette = palette,
         _displayMode = displayMode {
     // configure StageXL default options.
 
@@ -53,7 +58,7 @@ class StageXLRenderer extends CARenderer {
 
     _stage = new Stage(_canvas, width: width, height: height);
 
-    print('Stage XL setup: ${width}x${height}');
+    print('Stage XL setup: ${width}x${height} palette: $_palette');
 
     var renderLoop = new RenderLoop();
     renderLoop.addStage(_stage);
@@ -77,13 +82,15 @@ class StageXLRenderer extends CARenderer {
 
     for (num x = 0; x < world.width; x++) {
       for (num y = 0; y < world.height; y++) {
-        if (world.state(x, y) == 0) continue;
+        int state = world.state(x, y);
+//        print ('state: $state ${GameOfLifeStates.values[state]} color: ${_palette[state]}');
+        if (_palette[state] == null) continue;
+
         backgroundGrid.graphics.beginPath();
         backgroundGrid.graphics
             .rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
 
-        backgroundGrid.graphics.fillColor(
-            world.history(1, x, y) == 1 ? Color.Orange : Color.Yellow);
+        backgroundGrid.graphics.fillColor(_palette[state]);
       }
     }
   }

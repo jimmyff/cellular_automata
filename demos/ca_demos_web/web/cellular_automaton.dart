@@ -12,10 +12,12 @@ import 'package:cellular_automaton/rules.dart';
 
 
 void startSimulation ({
+  CARules rules,
   num worldWidth,
   num worldHeight,
   num stageWidth,
   num stageHeight,
+  num speed_ms,
   String generator,
   StageXLDisplayMode displayMode,
   CanvasElement canvas
@@ -31,13 +33,15 @@ void startSimulation ({
     world: world,
     displayMode: displayMode,
     stageWidth: stageWidth,
-    stageHeight: stageHeight
+    stageHeight: stageHeight,
+    palette: rules.defaultPalette
   );
+
 
   final sim = new Simulator(
       world: world,
-      rules: new GameOfLife(),
-      speed: new Duration(milliseconds: 60),
+      rules: rules,
+      speed: new Duration(milliseconds: speed_ms),
       generator: generator
   );
 
@@ -48,8 +52,18 @@ void startSimulation ({
 void _initSimulation([dynamic _]) {
   num worldWidth = params['width']!=null?int.parse(params['width']):null;
   num worldHeight = params['height']!=null?int.parse(params['height']):null;
+  num speedMs = params['speed_ms']!=null?int.parse(params['speed_ms']):50;
   num stageWidth;
   num stageHeight;
+
+  CARules rules;
+  switch (params['rules']) {
+    case 'game_of_life':
+    default:
+      rules = new GameOfLife();
+
+      break;
+  }
 
   final num renderSize = int.parse(params['render_size'] ?? '8');
   final String generator = params['generator'];
@@ -77,12 +91,14 @@ void _initSimulation([dynamic _]) {
   querySelector('body').classes.add(bodyClass);
 
   startSimulation(
+      rules: rules,
       worldWidth: worldWidth,
       worldHeight: worldHeight,
       stageHeight: stageHeight,
       stageWidth: stageWidth,
       generator: generator,
       displayMode: displayMode,
+      speed_ms: speedMs,
       canvas: querySelector('#stage')
         ..style.width = '${stageWidth}px'
         ..style.height ='${stageHeight}px'

@@ -10,18 +10,34 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cellular_automaton web examples</title>
+    <title>Cellular Automaton web examples</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height:1.6em;
+            padding:2em;
+            font-size:90%;
+            color:#333;
+            background: #fff;
+        }
+        a {
+            color:rebeccapurple;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>cellular_automaton web examples</h1>
+    <h1>Cellular Automaton Demos</h1>
+    <p>cellular_automaton is a dart library for exploring cellular automaton, for more information visit the project page: <a href="https://github.com/jimmyff/cellular_automaton">https://github.com/jimmyff/cellular_automaton</a></p>
+    <br />
     <ul>
         <li>Conway's Game of Life</li>
         <ul>
-            <li><a href="game_of_life.html?width=64&height=64&stage=fixed&render_size=8&generator=random">64x64 generator: random seeds</a></li>
-            <li><a href="game_of_life.html?width=128&height=64&stage=fixed&render_size=4">128x64 (random generator)</a></li>
-            <li><a href="game_of_life.html?stage=fullscreen&render_size=5">Full screen (random generator)</a></li>
-            <li><a href="game_of_life.html?width=512&height=512&stage=fixed&render_size=2&generator=random">512x512 generator: random seeds</a></li>
+            <li><a href="cellular_automaton.html?rules=game_of_life&width=64&height=64&stage=fixed&render_size=8&generator=random">64x64 generator: random seeds</a></li>
+            <li><a href="cellular_automaton.html?rules=game_of_life&width=128&height=64&stage=fixed&render_size=4">128x64 (random generator)</a></li>
+            <li><a href="cellular_automaton.html?rules=game_of_life&stage=fullscreen&render_size=5">Full screen (random generator)</a></li>
+            <li><a href="cellular_automaton.html?rules=game_of_life&width=512&height=512&stage=fixed&render_size=2&generator=random">512x512 generator: random seeds</a></li>
         </ul>
     </ul>
 </body>

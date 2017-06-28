@@ -10,7 +10,7 @@ A simple platform for playing with Cellular Automaton by jimmyff. Happily accept
 
  * Generators to seed the simulation
  * Current renderers:
-   * StageXL (WebGL)
+   * StageXL: WebGL, fullscreen support
   
 ## Implemented rules/simulations
   

@@ -1,8 +1,8 @@
 import 'package:cellular_automaton/src/rules/_ca_rules.dart';
 import 'package:cellular_automaton/cellular_automaton.dart';
+import 'package:stagexl/src/ui/color.dart';
 
-// TODO: currently unused
-enum GameOfLifeCellState {
+enum GameOfLifeStates {
   DEAD,
   ALIVE,
   DEAD_UNDER_POPULATED,
@@ -12,15 +12,22 @@ enum GameOfLifeCellState {
 
 /// Implementation of Conway's Game of Life CA rules
 class GameOfLife extends CARules {
-  // TODO: currently unused
-  int reduceState(GameOfLifeCellState state) {
+  final Map<int, int> defaultPalette = {
+    GameOfLifeStates.DEAD.index: Color.Blue,
+    GameOfLifeStates.DEAD_UNDER_POPULATED.index: Color.DarkBlue,
+    GameOfLifeStates.DEAD_OVER_POPULATED.index: Color.BlueViolet,
+    GameOfLifeStates.ALIVE.index: Color.Yellow,
+    GameOfLifeStates.ALIVE_BORN.index: Color.LightYellow,
+  };
+
+  int reduceState(GameOfLifeStates state) {
     switch (state) {
-      case GameOfLifeCellState.DEAD:
-      case GameOfLifeCellState.DEAD_UNDER_POPULATED:
-      case GameOfLifeCellState.DEAD_OVER_POPULATED:
+      case GameOfLifeStates.DEAD:
+      case GameOfLifeStates.DEAD_UNDER_POPULATED:
+      case GameOfLifeStates.DEAD_OVER_POPULATED:
         return 0;
-      case GameOfLifeCellState.ALIVE:
-      case GameOfLifeCellState.ALIVE_BORN:
+      case GameOfLifeStates.ALIVE:
+      case GameOfLifeStates.ALIVE_BORN:
         return 1;
       default:
         throw 'Unknown state: $state';
@@ -28,26 +35,31 @@ class GameOfLife extends CARules {
   }
 
   int calculateState(int x, int y, CellWorld world) {
+    GameOfLifeStates currentState = GameOfLifeStates.values[world.state(x, y)];
     List<int> neighborhood = world.getNeighborhood(x, y);
-    var sum = neighborhood.reduce((a, b) => a + b);
-//    print ('$x $y : state: ${world.state(x, y)} sum: $sum : $neighborhood');
 
-    if (world.state(x, y) == 1) {
-      // if we are alive
+    // calculate the sum of alive neighbors
+    int sum = neighborhood.fold(
+        0, (a, b) => a + reduceState(GameOfLifeStates.values[b]));
 
-      // under population
-      if (sum < 2)
-        return 0;
+//    print('$x $y : state: ${GameOfLifeStates.values[world.state(x, y)].toString()} sum: $sum : $neighborhood');
 
-      // live on
-      else if ([2, 3].contains(sum))
-        return 1;
+    switch (currentState) {
+      case GameOfLifeStates.ALIVE:
+      case GameOfLifeStates.ALIVE_BORN:
+        if (sum < 2) return GameOfLifeStates.DEAD_UNDER_POPULATED.index;
+        if ([2, 3].contains(sum)) return GameOfLifeStates.ALIVE.index;
+        if (sum > 3) return GameOfLifeStates.DEAD_OVER_POPULATED.index;
+        break;
 
-      // overpopulation
-      else if (sum > 3) return 0;
-    } else // dead cells
-    if (sum == 3) return 1; // born!
+      case GameOfLifeStates.DEAD:
+      case GameOfLifeStates.DEAD_UNDER_POPULATED:
+      case GameOfLifeStates.DEAD_OVER_POPULATED:
+        if (sum == 3) return GameOfLifeStates.ALIVE_BORN.index;
 
-    return 0; // still dead
+        return currentState.index;
+        return GameOfLifeStates.DEAD.index;
+        break;
+    }
   }
 }
