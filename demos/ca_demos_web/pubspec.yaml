@@ -1,14 +1,14 @@
 name: ca_demos_web
-description: Web demos utilising the cellular_automaton lib
+description: Web demos utilising the cellular_automata lib
 version: 0.1.1
-homepage: https://github.com/jimmyff/cellular_automaton
+homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
 environment:
   sdk: '>=1.20.1 <2.0.0'
 
 dependencies:
-  cellular_automaton:
+  cellular_automata:
     path: ../..
   params: '^0.0.4'
 

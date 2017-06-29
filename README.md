@@ -1,10 +1,11 @@
-# Cellular Automaton
+# Cellular Automata
   
-A simple platform for playing with Cellular Automaton by jimmyff. Happily accepting pull requests! ^_^
-  
- * Github: [https://github.com/jimmyff/cellular_automaton](https://github.com/jimmyff/cellular_automaton)
- * Dart Pub: [https://pub.dartlang.org/packages/cellular_automaton](https://pub.dartlang.org/packages/cellular_automaton)
- * Demos: [http://jimmyff.github.io/cellular_automaton](http://jimmyff.github.io/cellular_automaton)
+A cellular automata library / playground written in Dart. Happily accepting pull requests! ^_^
+ 
+ * Author: [jimmyff](https://github.com/jimmyff)
+ * Github: [https://github.com/jimmyff/cellular_automata](https://github.com/jimmyff/cellular_automata)
+ * Dart Pub: [https://pub.dartlang.org/packages/cellular_automata](https://pub.dartlang.org/packages/cellular_automata)
+ * Demos: [http://jimmyff.github.io/cellular_automata](http://jimmyff.github.io/cellular_automata)
   
 ## Features
 
@@ -18,7 +19,7 @@ A simple platform for playing with Cellular Automaton by jimmyff. Happily accept
   
 ## Demos
   
-See the `demos/` folder for demos. You can try the [hosted demos](http://jimmyff.github.io/cellular_automaton) here.
+See the `demos/` folder for demos. You can try the [hosted demos](http://jimmyff.github.io/cellular_automata) here.
   
 ## Roadmap
 
@@ -40,4 +41,4 @@ See the `demos/` folder for demos. You can try the [hosted demos](http://jimmyff
   
 ## Licence
    
-Please see the [cellular_automaton license](https://github.com/jimmyff/cellular_automaton/blob/master/LICENSE).
+Please see the [cellular_automata license](https://github.com/jimmyff/cellular_automata/blob/master/LICENSE).

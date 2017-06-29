@@ -1,6 +1,6 @@
 import 'dart:math' as math;
-import 'package:cellular_automaton/cellular_automaton.dart';
-import 'package:cellular_automaton/src/util/array_2d.dart';
+import 'package:cellular_automata/cellular_automata.dart';
+import 'package:cellular_automata/src/util/array_2d.dart';
 
 // Numerous of these generators were ported, original Author: @protolambda
 // https://github.com/protolambda/automata/blob/master/src/lib.js

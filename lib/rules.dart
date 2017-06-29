@@ -1,5 +1,5 @@
 /// Exports all of the rules/simulations
-library cellular_automaton.rules;
+library cellular_automata.rules;
 
-export 'package:cellular_automaton/src/rules/_ca_rules.dart';
-export 'package:cellular_automaton/src/rules/game_of_life.dart';
+export 'package:cellular_automata/src/rules/_ca_rules.dart';
+export 'package:cellular_automata/src/rules/game_of_life.dart';

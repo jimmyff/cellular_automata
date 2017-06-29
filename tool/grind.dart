@@ -1,4 +1,4 @@
-library cellular_automaton.tool.grind;
+library cellular_automata.tool.grind;
 
 export 'package:bwu_grinder_tasks/bwu_grinder_tasks.dart' hide main;
 import 'package:bwu_grinder_tasks/bwu_grinder_tasks.dart'

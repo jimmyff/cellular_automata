@@ -1,7 +1,7 @@
-name: cellular_automaton
-description: Platform for experimenting with Cellular Automaton
+name: cellular_automata
+description: A cellular automata library & playground
 version: 0.1.1
-homepage: https://github.com/jimmyff/cellular_automaton
+homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
 environment:

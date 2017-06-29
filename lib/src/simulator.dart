@@ -1,8 +1,8 @@
 import 'dart:core';
 import 'dart:async';
 
-import 'package:cellular_automaton/cellular_automaton.dart';
-export 'package:cellular_automaton/src/util/timer.dart';
+import 'package:cellular_automata/cellular_automata.dart';
+export 'package:cellular_automata/src/util/timer.dart';
 
 /// Simulation management class
 class Simulator {

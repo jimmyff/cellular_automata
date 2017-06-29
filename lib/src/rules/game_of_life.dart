@@ -1,5 +1,5 @@
-import 'package:cellular_automaton/src/rules/_ca_rules.dart';
-import 'package:cellular_automaton/cellular_automaton.dart';
+import 'package:cellular_automata/src/rules/_ca_rules.dart';
+import 'package:cellular_automata/cellular_automata.dart';
 
 enum GameOfLifeStates {
   DEAD,

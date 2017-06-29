@@ -1,5 +1,5 @@
-import 'package:cellular_automaton/cellular_automaton.dart';
-import 'package:cellular_automaton/src/util/array_2d.dart';
+import 'package:cellular_automata/cellular_automata.dart';
+import 'package:cellular_automata/src/util/array_2d.dart';
 
 /// Stores the world state
 class CellWorld<T> {

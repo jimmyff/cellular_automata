@@ -2,13 +2,13 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'dart:html';
-import 'package:cellular_automaton/cellular_automaton.dart';
-import 'package:cellular_automaton/renderer_stagexl.dart';
-import 'package:cellular_automaton/rules.dart';
+import 'package:cellular_automata/cellular_automata.dart';
+import 'package:cellular_automata/renderer_stagexl.dart';
+import 'package:cellular_automata/rules.dart';
 
 import 'package:stagexl/src/ui/color.dart';
 
-// Simple example of using cellular_automaton
+// Simple example of using cellular_automata
 void main() {
   // Create the simulator object. This holds the world (the grid) and
   // the rules (the cellular automaton). It also controls the seeding & timing

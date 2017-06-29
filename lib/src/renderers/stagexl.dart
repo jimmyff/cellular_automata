@@ -1,8 +1,8 @@
 import 'dart:html';
 import 'package:stagexl/stagexl.dart';
 
-import 'package:cellular_automaton/src/renderers/_ca_renderer.dart';
-import 'package:cellular_automaton/src/util/array_2d.dart';
+import 'package:cellular_automata/src/renderers/_ca_renderer.dart';
+import 'package:cellular_automata/src/util/array_2d.dart';
 
 enum StageXLDisplayMode { FULLSCREEN, FIXED }
 

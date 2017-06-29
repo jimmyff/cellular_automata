@@ -6,12 +6,12 @@ import 'dart:async';
 
 import 'package:params/client.dart';
 
-import 'package:cellular_automaton/cellular_automaton.dart';
-import 'package:cellular_automaton/renderer_stagexl.dart';
-import 'package:cellular_automaton/rules.dart';
+import 'package:cellular_automata/cellular_automata.dart';
+import 'package:cellular_automata/renderer_stagexl.dart';
+import 'package:cellular_automata/rules.dart';
 import 'package:stagexl/src/ui/color.dart';
 
-// Fully featured example of using cellular_automaton
+// Fully featured example of using cellular_automata
 void startSimulation(
     {CARules rules,
     num worldWidth,
