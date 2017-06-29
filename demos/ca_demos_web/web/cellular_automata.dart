@@ -40,7 +40,9 @@ void startSimulation(
       canvas: canvas,
       displayMode: displayMode,
       stageWidth: stageWidth,
-      stageHeight: stageHeight);
+      stageHeight: stageHeight,
+      gridWidth: worldWidth,
+      gridHeight: worldHeight);
 
   // render loop (wire the simulation & renderer together)
   sim.onRender.listen((CellWorld world) {

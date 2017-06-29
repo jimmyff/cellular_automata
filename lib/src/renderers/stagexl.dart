@@ -8,6 +8,8 @@ enum StageXLDisplayMode { FULLSCREEN, FIXED }
 
 /// StageXL WebGL renderer for displaying CA on the web
 class StageXLRenderer extends CARenderer {
+  int _gridWidth;
+  int _gridHeight;
   int _stageWidth;
   int _stageHeight;
 
@@ -18,14 +20,24 @@ class StageXLRenderer extends CARenderer {
   num get width => _stageWidth;
   num get height => _stageHeight;
 
+  num get gridWidth => _gridWidth;
+  num get gridHeight => _gridHeight;
+
+  Array2d<Bitmap> _bitmapGrid;
+  Sprite _sprite;
+
   StageXLRenderer(
       {CanvasElement canvas,
       StageXLDisplayMode displayMode,
       num stageWidth,
-      num stageHeight})
+      num stageHeight,
+      int gridWidth,
+      int gridHeight})
       : _canvas = canvas,
         _stageWidth = stageWidth ?? 128,
         _stageHeight = stageHeight ?? 128,
+        _gridWidth = gridWidth ?? 128,
+        _gridHeight = gridHeight ?? 128,
         _displayMode = displayMode {
     StageXL.stageOptions.renderEngine = RenderEngine.WebGL;
     StageXL.stageOptions.backgroundColor = Color.Black;
@@ -50,17 +62,28 @@ class StageXLRenderer extends CARenderer {
     var renderLoop = new RenderLoop();
     renderLoop.addStage(_stage);
 
+    _bitmapGrid = new Array2d<Bitmap>(_gridWidth, _gridHeight, null);
+    _sprite = new Sprite();
+
+    for (num x = 0; x < _bitmapGrid.width; x++) {
+      for (num y = 0; y < _bitmapGrid.height; y++) {
+        var bitmap = new Bitmap();
+        bitmap.x = x * (width / _bitmapGrid.width);
+        bitmap.y = y * (height / _bitmapGrid.height);
+        _sprite.addChild(bitmap);
+        _bitmapGrid.set(x, y, bitmap);
+      }
+    }
+    // add the sprite
+    _stage.addChild(_sprite);
+
     // output the size of stage.contentRectangle
     _stage.onResize.listen((e) => print(_stage.contentRectangle));
   }
 
+  Map<int, BitmapData> _colours = {};
+
   void render(Array2d<int> renderData) {
-    // TODO: This shouldn't remove children - but needs to otherwise lags
-    _stage.removeChildren();
-
-    var grid = new Shape();
-    grid.addTo(_stage);
-
     num cellWidth = (width / renderData.width);
     num cellHeight = (height / renderData.height);
 
@@ -69,10 +92,9 @@ class StageXLRenderer extends CARenderer {
         final color = renderData.get(x, y);
         if (color == null) continue;
 
-        grid.graphics.beginPath();
-        grid.graphics
-            .rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
-        grid.graphics.fillColor(color);
+        _colours[color] ??= new BitmapData(cellWidth, cellHeight, color);
+
+        _bitmapGrid.get(x, y).bitmapData = _colours[color];
       }
     }
   }

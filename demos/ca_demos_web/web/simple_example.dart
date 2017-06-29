@@ -24,7 +24,11 @@ void main() {
 
   // create the renderer (StageXL in a web context)
   final renderer = new StageXLRenderer(
-      canvas: querySelector('#canvas'), stageWidth: 300, stageHeight: 300);
+      canvas: querySelector('#canvas'),
+      stageWidth: 300,
+      stageHeight: 300,
+      gridWidth: 64,
+      gridHeight: 64);
 
   // render loop (wire the simulation & renderer together)
   sim.onRender.listen((CellWorld world) {

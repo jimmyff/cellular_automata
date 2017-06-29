@@ -1,6 +1,6 @@
 name: ca_demos_web
 description: Web demos utilising the cellular_automata lib
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
