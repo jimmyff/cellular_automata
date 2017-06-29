@@ -19,7 +19,7 @@ void startSimulation(
     num stageWidth,
     num stageHeight,
     num speed_ms,
-    String generator,
+    MathematicalGenerators mathematicalGenerator,
     StageXLDisplayMode displayMode,
     CanvasElement canvas}) {
   final world = new CellWorld<GameOfLifeStates>(
@@ -32,7 +32,7 @@ void startSimulation(
       rules: rules,
       generationDuration: new Duration(milliseconds: speed_ms),
       generator: new MathematicalGenerator<GameOfLifeStates>(
-          type: MathematicalGenerators.RANDOM,
+          type: mathematicalGenerator,
           valueTrue: GameOfLifeStates.ALIVE_BORN,
           valueFalse: GameOfLifeStates.DEAD));
 
@@ -56,7 +56,7 @@ void startSimulation(
         })));
   });
 
-  sim.start();
+  sim.start(delay: new Duration(milliseconds: 100));
 }
 
 // Process the input parameteres
@@ -78,7 +78,20 @@ void _initSimulation([dynamic _]) {
   }
 
   final num renderSize = int.parse(params['render_size'] ?? '8');
-  final String generator = params['generator'];
+
+  MathematicalGenerators generator;
+  if (params['generator'] != null) {
+    final gen = params['generator'].toString().toUpperCase();
+
+    // create a List<String> of the generators
+    List<String> gens = [];
+    MathematicalGenerators.values.forEach((E) =>
+        gens.add(E.toString().substring(E.toString().indexOf('\.') + 1)));
+
+    if (gens.contains(gen))
+      generator = MathematicalGenerators.values[gens.indexOf(gen)];
+  }
+
   StageXLDisplayMode displayMode;
 
   String bodyClass;
@@ -108,7 +121,7 @@ void _initSimulation([dynamic _]) {
       worldHeight: worldHeight,
       stageHeight: stageHeight,
       stageWidth: stageWidth,
-      generator: generator,
+      mathematicalGenerator: generator,
       displayMode: displayMode,
       speed_ms: speedMs,
       canvas: querySelector('#stage')

@@ -34,8 +34,8 @@ class Simulator {
     }
   }
 
-  void start() {
-    initTimer(_generationDuration, new Duration(seconds: 0));
+  void start({Duration delay}) {
+    initTimer(_generationDuration, delay);
   }
 
   Future<Null> initTimer(Duration speed, Duration delay) async {

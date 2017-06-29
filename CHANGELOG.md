@@ -8,6 +8,7 @@
 - Renderers are now further decoupled from the Simulation. They now just require an array2d containing states expressed in a palette.
 - Added a very simple demo (simple_example.dart) to show minimum setup code
 - CellWorld now stores full cell-states and Rules also deal with full cell-states which makes code more readable
+- Fixed mathematical generators
 
 ## 0.0
 

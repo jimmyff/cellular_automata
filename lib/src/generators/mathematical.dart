@@ -5,7 +5,22 @@ import 'package:cellular_automaton/src/util/array_2d.dart';
 // Numerous of these generators were ported, original Author: @protolambda
 // https://github.com/protolambda/automata/blob/master/src/lib.js
 
-enum MathematicalGenerators { RANDOM, CELLS }
+enum MathematicalGenerators {
+  RANDOM,
+  CELLS,
+  X_MOD_Y,
+  ARCS,
+  DIAGONAL_STRIPES,
+  BLOCKS,
+  BLOCKS2,
+  CHESS,
+  ENDLESS_SIERPINSKI,
+  SIERPINSKI_LEVEL10,
+  SIERPINSKI_MOUNTAINS
+
+  // Not working:
+  //STABLE,
+}
 
 //TODO: this is a mess
 class MathematicalGenerator<T> extends CAGenerator {
@@ -14,46 +29,62 @@ class MathematicalGenerator<T> extends CAGenerator {
         (new math.Random().nextInt(2)) == 0,
     MathematicalGenerators.CELLS: (x, y) =>
         math.cos(x * 10.0) > math.sin(y * 10.0),
+    MathematicalGenerators.X_MOD_Y: (x, y) => y == 0 || x % y == 0,
 
-//    'XmodY': (x, y) => (y > 0) && x % y == 0 ? 1 : 0,
-//    'arcs': (x, y) => (y > 0) && (x % y) & (x ^ y) > 2 ? 1 : 0,
-//    'stable': (x, y) => (x ^ y) % 8 == 0 ? 1 : 0,
-//    'chess': (x, y) => (x ^ y).abs() % 8 < 4 ? 1 : 0,
-//    'blocks': (x, y) => (((x ^ y) > ~x) && y <= 0) ? 1 : 0,
-//
-////    Not working:
-////    'stable2': (x, y) => (x ^ y / 3) % 2 ? 1 : 0,
-////    'blocks2': (x, y) => (x ^ y)+x >= 0?1:0,
-//
-////    'prime': (x, y) => Automaton.isPrime(x)?1:0,
-//    'xormod3': (x, y) => (x ^ y) % 3 == 0 ? 1 : 0,
-////    'ulam': (x, y) => Automaton.isPrime(Automaton.ulam(x, y))?1:0,
-////    'XORprime': (x, y) => Automaton.isPrime((x).abs() ^ (y).abs())?1:0,
-////    'SierpinskiCarpet': (x, y) => Automaton.sierpinskiCarpet(x, y)?1:0,
-//    'endlessSierpinski': (x, y) => (x ^ y) + x - y == 0 ? 1 : 0,
-//    'sierpinskiLevel10': (x, y) => ((x ^ y) + x - y) % 1024 == 0 ? 1 : 0,
-//    'sierpinskiMountains': (x, y) => y > 0 && ((x ^ y) + y - x) % y == 0 ? 1 : 0
+    // TODO: not working correctly
+    MathematicalGenerators.ARCS: (x, y) => (y > 0) && (x % y) & (x ^ y) > 2,
+
+    MathematicalGenerators.DIAGONAL_STRIPES: (x, y) => (x ^ y) % 8 == 0,
+    MathematicalGenerators.CHESS: (x, y) => (x ^ y).abs() % 8 < 4,
+    MathematicalGenerators.BLOCKS: (x, y) => (((x ^ y) > ~x) && y <= 0),
+    MathematicalGenerators.BLOCKS2: (x, y) => (x ^ y) + x >= 0,
+    MathematicalGenerators.ENDLESS_SIERPINSKI: (x, y) => (x ^ y) + x - y == 0,
+    MathematicalGenerators.SIERPINSKI_LEVEL10: (x, y) =>
+        ((x ^ y) + x - y) % 1024 == 0,
+    MathematicalGenerators.SIERPINSKI_MOUNTAINS: (x, y) =>
+        ((x ^ y) + y - x) == 0 || ((x ^ y) + y - x) % y == 0,
+//    MathematicalGenerators.STABLE: (x, y) =>
+//      (x ^ y / 3) % 2,
+
+////    TODO: Add functionality for these
+////    MathematicalGenerators.prime': (x, y) => Automaton.isPrime(x)?1:0,
+//    'MathematicalGenerators.ormod3': (x, y) => (x ^ y) % 3 == 0 ? 1 : 0,
+////    MathematicalGenerators.ulam': (x, y) => Automaton.isPrime(Automaton.ulam(x, y))?1:0,
+////    MathematicalGenerators.XORprime': (x, y) => Automaton.isPrime((x).abs() ^ (y).abs())?1:0,
+////    MathematicalGenerators.SierpinskiCarpet': (x, y) => Automaton.sierpinskiCarpet(x, y)?1:0,
   };
 
   /// generate the grid
   Array2d<T> generate(width, height) {
     final out = new Array2d<T>(width, height);
 
+    // position 0,0 in the centre
+    final offsetX = -(width / 2).round();
+    final offsetY = -(height / 2).round();
+
     for (int x = 0; x < width; x++)
       for (int y = 0; y < height; y++)
-        out.set(x, y, generators[type](x, y) ? valueTrue : valueFalse);
+        out.set(
+            x,
+            y,
+            generators[_type](x + offsetX, (y + offsetY) * -1)
+                ? valueTrue
+                : valueFalse);
 
-//    print (out);
     return out;
   }
 
-  final MathematicalGenerators type;
+  MathematicalGenerators _type;
   final T valueTrue;
   final T valueFalse;
 
   MathematicalGenerator(
       {MathematicalGenerators type, T valueTrue, T valueFalse})
-      : type = type,
+      : _type = type,
         valueTrue = valueTrue,
-        valueFalse = valueFalse {}
+        valueFalse = valueFalse {
+    // pick a random generator if not set
+    _type ??= MathematicalGenerators.values[
+        new math.Random().nextInt(MathematicalGenerators.values.length)];
+  }
 }
