@@ -13,6 +13,10 @@ class Simulator {
 
   CARules get rules => _rules;
 
+  int generationCount = 0;
+  num averageCyclesPerSecond = 0;
+  int lastCycleTimestamp;
+
   // render loop
   final StreamController<CellWorld> _onRender =
       new StreamController<CellWorld>();
@@ -43,8 +47,19 @@ class Simulator {
 
     _timer = timer(speed ?? new Duration(seconds: 1));
     _timer.listen((int counter) {
+      generationCount++;
+
+      final now = new DateTime.now().millisecondsSinceEpoch;
+
+      if (lastCycleTimestamp != null)
+        averageCyclesPerSecond = (averageCyclesPerSecond +
+                (1 / ((now - lastCycleTimestamp) / 1000))) /
+            2;
+      lastCycleTimestamp = now;
       _world.applyRules(_rules);
       _onRender.add(_world);
+      if (generationCount % 20 == 0)
+        print('generation $generationCount cps: $averageCyclesPerSecond');
     });
   }
 }

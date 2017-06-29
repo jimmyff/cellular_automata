@@ -36,26 +36,28 @@ void startSimulation(
           valueTrue: GameOfLifeStates.ALIVE_BORN,
           valueFalse: GameOfLifeStates.DEAD));
 
+  final palette = new Map<GameOfLifeStates, int>.from({
+    GameOfLifeStates.DEAD: Color.Blue,
+    GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
+    GameOfLifeStates.DEAD_OVER_POPULATED: Color.BlueViolet,
+    GameOfLifeStates.ALIVE: Color.Yellow,
+    GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
+  });
   final renderer = new StageXLRenderer(
-      canvas: canvas,
-      displayMode: displayMode,
-      stageWidth: stageWidth,
-      stageHeight: stageHeight,
-      gridWidth: worldWidth,
-      gridHeight: worldHeight);
+    canvas: canvas,
+    displayMode: displayMode,
+    stageWidth: stageWidth,
+    stageHeight: stageHeight,
+    gridWidth: worldWidth,
+    gridHeight: worldHeight,
+    palette: palette.values.toList(growable: false),
+  );
 
   // render loop (wire the simulation & renderer together)
   sim.onRender.listen((CellWorld world) {
     // render the cell world state
-    renderer.render(world.applyPalette<int>(
-        changesOnly: true,
-        palette: new Map<GameOfLifeStates, int>.from({
-          GameOfLifeStates.DEAD: Color.Blue,
-          GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
-          GameOfLifeStates.DEAD_OVER_POPULATED: Color.BlueViolet,
-          GameOfLifeStates.ALIVE: Color.Yellow,
-          GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
-        })));
+    renderer
+        .render(world.applyPalette<int>(changesOnly: true, palette: palette));
   });
 
   sim.start(delay: new Duration(milliseconds: 100));

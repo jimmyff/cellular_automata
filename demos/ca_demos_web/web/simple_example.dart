@@ -22,26 +22,29 @@ void main() {
           valueTrue: GameOfLifeStates.ALIVE_BORN,
           valueFalse: GameOfLifeStates.DEAD));
 
+  final palette = new Map<GameOfLifeStates, int>.from({
+    GameOfLifeStates.DEAD: Color.Blue,
+    GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
+    GameOfLifeStates.DEAD_OVER_POPULATED: Color.BlueViolet,
+    GameOfLifeStates.ALIVE: Color.Yellow,
+    GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
+  });
+
   // create the renderer (StageXL in a web context)
   final renderer = new StageXLRenderer(
-      canvas: querySelector('#canvas'),
-      stageWidth: 300,
-      stageHeight: 300,
-      gridWidth: 64,
-      gridHeight: 64);
+    canvas: querySelector('#canvas'),
+    stageWidth: 512,
+    stageHeight: 512,
+    gridWidth: 64,
+    gridHeight: 64,
+    palette: palette.values.toList(growable: false),
+  );
 
   // render loop (wire the simulation & renderer together)
   sim.onRender.listen((CellWorld world) {
     // render the cell world state
-    renderer.render(world.applyPalette<int>(
-        changesOnly: true,
-        palette: new Map<GameOfLifeStates, int>.from({
-          GameOfLifeStates.DEAD: Color.Blue,
-          GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
-          GameOfLifeStates.DEAD_OVER_POPULATED: Color.BlueViolet,
-          GameOfLifeStates.ALIVE: Color.Yellow,
-          GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
-        })));
+    renderer
+        .render(world.applyPalette<int>(changesOnly: true, palette: palette));
   });
 
   // start the simulation

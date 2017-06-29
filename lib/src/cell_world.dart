@@ -69,7 +69,10 @@ class CellWorld<T> {
       for (num y = 0; y < height; y++) {
         final state = getState(x, y);
 
-        if (changesOnly && state == getState(x, y, 1)) continue;
+        // only send changes (if generation not the first generation)
+        if (_generations.length > 1 &&
+            changesOnly &&
+            state == getState(x, y, 1)) continue;
 
         output.set(x, y, palette[getState(x, y)]);
       }
