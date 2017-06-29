@@ -13,7 +13,7 @@ class CellWorld<T> {
 
   /// returns the state of the world a number of generations ago
   Array2d<T> generation([int ago = 0]) {
-    if (_generations.length < ago) return null;
+    if (_generations.length - 1 < ago) return null;
     return _generations[_generations.length - 1 - ago];
   }
 
@@ -67,6 +67,10 @@ class CellWorld<T> {
 
     for (num x = 0; x < width; x++) {
       for (num y = 0; y < height; y++) {
+        final state = getState(x, y);
+
+        if (changesOnly && state == getState(x, y, 1)) continue;
+
         output.set(x, y, palette[getState(x, y)]);
       }
     }

@@ -54,16 +54,12 @@ class StageXLRenderer extends CARenderer {
     _stage.onResize.listen((e) => print(_stage.contentRectangle));
   }
 
-  // TODO: this should accept a patch
   void render(Array2d<int> renderData) {
+    // TODO: This shouldn't remove children - but needs to otherwise lags
     _stage.removeChildren();
 
-    var backgroundGrid = new Shape();
-    backgroundGrid.addTo(_stage);
-
-    backgroundGrid.graphics.beginPath();
-    backgroundGrid.graphics.rect(0, 0, width, height);
-    backgroundGrid.graphics.fillColor(Color.DarkViolet);
+    var grid = new Shape();
+    grid.addTo(_stage);
 
     num cellWidth = (width / renderData.width);
     num cellHeight = (height / renderData.height);
@@ -73,10 +69,10 @@ class StageXLRenderer extends CARenderer {
         final color = renderData.get(x, y);
         if (color == null) continue;
 
-        backgroundGrid.graphics.beginPath();
-        backgroundGrid.graphics
+        grid.graphics.beginPath();
+        grid.graphics
             .rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
-        backgroundGrid.graphics.fillColor(color);
+        grid.graphics.fillColor(color);
       }
     }
   }
