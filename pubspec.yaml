@@ -1,6 +1,6 @@
 name: cellular_automata
 description: A cellular automata library & playground
-version: 0.1.3
+version: 0.1.4
 homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
@@ -19,3 +19,7 @@ dev_dependencies:
 
 transformers:
 - dart_to_js_script_rewriter
+- $dart2js:
+    checked: false
+    minify: true
+    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']

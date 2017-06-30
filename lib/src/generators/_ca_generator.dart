@@ -1,3 +1,5 @@
+import 'package:cellular_automata/src/util/array_2d.dart';
+
 abstract class CAGenerator {
-  generate(int width, int height);
+  Array2d generate(int width, int height);
 }

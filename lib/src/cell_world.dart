@@ -3,7 +3,7 @@ import 'package:cellular_automata/src/util/array_2d.dart';
 
 /// Stores the world state
 class CellWorld<T> {
-  List<Array2d<T>> _generations = [];
+  final List<Array2d<T>> _generations = [];
 
   bool wrap = true;
 
@@ -18,7 +18,7 @@ class CellWorld<T> {
   }
 
   /// sets the state of a cell
-  setState(int x, int y, T newState, [Array2d<T> array2d]) {
+  void setState(int x, int y, T newState, [Array2d<T> array2d]) {
     (array2d ?? generation()).set(x, y, newState);
   }
 
@@ -38,20 +38,25 @@ class CellWorld<T> {
 
   /// returns neighboring cells
   List<T> getNeighborhood(int x, int y, {String system: 'moore'}) {
-    // TODO: implement neighboring systems..
-    return [
-      getState(x - 1, y - 1),
-      getState(x, y - 1),
-      getState(x + 1, y - 1),
-      getState(x - 1, y),
-      getState(x + 1, y),
-      getState(x - 1, y + 1),
-      getState(x, y + 1),
-      getState(x + 1, y + 1)
-    ];
+    switch (system) {
+
+      // TODO: make an enum
+      case 'moore':
+      default:
+        return [
+          getState(x - 1, y - 1),
+          getState(x, y - 1),
+          getState(x + 1, y - 1),
+          getState(x - 1, y),
+          getState(x + 1, y),
+          getState(x - 1, y + 1),
+          getState(x, y + 1),
+          getState(x + 1, y + 1)
+        ];
+    }
   }
 
-  CellWorld({int this.width, int this.height, this.defaultState}) {}
+  CellWorld({this.width, this.height, this.defaultState});
 
   /// apply a palette to the world state
   Array2d<T> applyPalette<T>({
@@ -87,17 +92,19 @@ class CellWorld<T> {
   }
 
   /// Apply CA Rules on a new generation
-  applyRules(CARules rules) {
-    final generation = new Array2d<T>(width, height);
-    for (int x = 0; x < width; x++)
-      for (int y = 0; y < height; y++)
-        setState(x, y, rules.calculateState(x, y, this), generation);
+  void applyRules(CARules rules) {
+    final newGen = new Array2d<T>(width, height);
+    final whatToProcess = rules.whatToProcess(generation());
+    for (var x = 0; x < width; x++)
+      for (var y = 0; y < height; y++)
+        if (whatToProcess.get(x, y))
+          setState(x, y, rules.calculateState(x, y, this), newGen);
 
-    saveGeneration(generation);
+    saveGeneration(newGen);
   }
 
   /// Apply a generator on a new generation
-  applyGenerator(CAGenerator generator) {
+  void applyGenerator(CAGenerator generator) {
     saveGeneration(generator.generate(width, height));
   }
 }

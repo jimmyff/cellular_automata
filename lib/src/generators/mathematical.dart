@@ -25,45 +25,48 @@ enum MathematicalGenerators {
 //TODO: this is a mess
 class MathematicalGenerator<T> extends CAGenerator {
   static Map<dynamic, Function> generators = {
-    MathematicalGenerators.RANDOM: (x, y) =>
+    MathematicalGenerators.RANDOM: (int x, int y) =>
         (new math.Random().nextInt(2)) == 0,
-    MathematicalGenerators.CELLS: (x, y) =>
+    MathematicalGenerators.CELLS: (int x, int y) =>
         math.cos(x * 10.0) > math.sin(y * 10.0),
-    MathematicalGenerators.X_MOD_Y: (x, y) => y == 0 || x % y == 0,
+    MathematicalGenerators.X_MOD_Y: (int x, int y) => y == 0 || x % y == 0,
 
     // TODO: not working correctly
-    MathematicalGenerators.ARCS: (x, y) => (y > 0) && (x % y) & (x ^ y) > 2,
+    MathematicalGenerators.ARCS: (int x, int y) =>
+        (y > 0) && (x % y) & (x ^ y) > 2,
 
-    MathematicalGenerators.DIAGONAL_STRIPES: (x, y) => (x ^ y) % 8 == 0,
-    MathematicalGenerators.CHESS: (x, y) => (x ^ y).abs() % 8 < 4,
-    MathematicalGenerators.BLOCKS: (x, y) => (((x ^ y) > ~x) && y <= 0),
-    MathematicalGenerators.BLOCKS2: (x, y) => (x ^ y) + x >= 0,
-    MathematicalGenerators.ENDLESS_SIERPINSKI: (x, y) => (x ^ y) + x - y == 0,
-    MathematicalGenerators.SIERPINSKI_LEVEL10: (x, y) =>
+    MathematicalGenerators.DIAGONAL_STRIPES: (int x, int y) => (x ^ y) % 8 == 0,
+    MathematicalGenerators.CHESS: (int x, int y) => (x ^ y).abs() % 8 < 4,
+    MathematicalGenerators.BLOCKS: (int x, int y) => (((x ^ y) > ~x) && y <= 0),
+    MathematicalGenerators.BLOCKS2: (int x, int y) => (x ^ y) + x >= 0,
+    MathematicalGenerators.ENDLESS_SIERPINSKI: (int x, int y) =>
+        (x ^ y) + x - y == 0,
+    MathematicalGenerators.SIERPINSKI_LEVEL10: (int x, int y) =>
         ((x ^ y) + x - y) % 1024 == 0,
-    MathematicalGenerators.SIERPINSKI_MOUNTAINS: (x, y) =>
+    MathematicalGenerators.SIERPINSKI_MOUNTAINS: (int x, int y) =>
         ((x ^ y) + y - x) == 0 || ((x ^ y) + y - x) % y == 0,
-//    MathematicalGenerators.STABLE: (x, y) =>
+//    MathematicalGenerators.STABLE: (int x, int y) =>
 //      (x ^ y / 3) % 2,
 
 ////    TODO: Add functionality for these
-////    MathematicalGenerators.prime': (x, y) => Automaton.isPrime(x)?1:0,
-//    'MathematicalGenerators.ormod3': (x, y) => (x ^ y) % 3 == 0 ? 1 : 0,
-////    MathematicalGenerators.ulam': (x, y) => Automaton.isPrime(Automaton.ulam(x, y))?1:0,
-////    MathematicalGenerators.XORprime': (x, y) => Automaton.isPrime((x).abs() ^ (y).abs())?1:0,
-////    MathematicalGenerators.SierpinskiCarpet': (x, y) => Automaton.sierpinskiCarpet(x, y)?1:0,
+////    MathematicalGenerators.prime': (int x, int y) => Automaton.isPrime(x)?1:0,
+//    'MathematicalGenerators.ormod3': (int x, int y) => (x ^ y) % 3 == 0 ? 1 : 0,
+////    MathematicalGenerators.ulam': (int x, int y) => Automaton.isPrime(Automaton.ulam(int x, int y))?1:0,
+////    MathematicalGenerators.XORprime': (int x, int y) => Automaton.isPrime((x).abs() ^ (y).abs())?1:0,
+////    MathematicalGenerators.SierpinskiCarpet': (int x, int y) => Automaton.sierpinskiCarpet(int x, int y)?1:0,
   };
 
   /// generate the grid
-  Array2d<T> generate(width, height) {
+  @override
+  Array2d<T> generate(int width, int height) {
     final out = new Array2d<T>(width, height);
 
     // position 0,0 in the centre
     final offsetX = -(width / 2).round();
     final offsetY = -(height / 2).round();
 
-    for (int x = 0; x < width; x++)
-      for (int y = 0; y < height; y++)
+    for (var x = 0; x < width; x++)
+      for (var y = 0; y < height; y++)
         out.set(
             x,
             y,
@@ -79,10 +82,8 @@ class MathematicalGenerator<T> extends CAGenerator {
   final T valueFalse;
 
   MathematicalGenerator(
-      {MathematicalGenerators type, T valueTrue, T valueFalse})
-      : _type = type,
-        valueTrue = valueTrue,
-        valueFalse = valueFalse {
+      {MathematicalGenerators type, this.valueTrue, this.valueFalse})
+      : _type = type {
     // pick a random generator if not set
     _type ??= MathematicalGenerators.values[
         new math.Random().nextInt(MathematicalGenerators.values.length)];

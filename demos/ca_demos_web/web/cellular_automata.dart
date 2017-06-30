@@ -43,15 +43,15 @@ void startSimulation(
     GameOfLifeStates.ALIVE: Color.Yellow,
     GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
   });
-  final renderer = new StageXLRenderer(
-    canvas: canvas,
-    displayMode: displayMode,
-    stageWidth: stageWidth,
-    stageHeight: stageHeight,
-    gridWidth: worldWidth,
-    gridHeight: worldHeight,
-    palette: palette.values.toList(growable: false),
-  );
+
+  final renderer = new StageXLRenderer(width: worldWidth, height: worldHeight)
+    ..initStageXL(
+      canvas: canvas,
+      displayMode: displayMode,
+      stageWidth: stageWidth,
+      stageHeight: stageHeight,
+      palette: palette.values.toList(growable: false),
+    );
 
   // render loop (wire the simulation & renderer together)
   sim.onRender.listen((CellWorld world) {

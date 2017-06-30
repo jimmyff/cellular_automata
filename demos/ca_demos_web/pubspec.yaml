@@ -1,6 +1,6 @@
 name: ca_demos_web
 description: Web demos utilising the cellular_automata lib
-version: 0.1.3
+version: 0.1.4
 homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
@@ -19,4 +19,7 @@ dev_dependencies:
   bwu_grinder_tasks: '^0.1.1-dev'
 
 transformers:
-- dart_to_js_script_rewriter
+- $dart2js:
+    checked: false
+    minify: true
+    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']

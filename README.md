@@ -21,6 +21,19 @@ A cellular automata library / playground written in Dart. Happily accepting pull
   
 See the `demos/` folder for demos. You can try the [hosted demos](http://jimmyff.github.io/cellular_automata) here.
   
+## Performance
+
+Dartium performance is significantly faster than compiled performance at the moment. Also there are some generator [defects](https://github.com/dart-lang/sdk/issues/30049) that are yet to be resolved. To try and increase use the `trust-type-annotations` flag in your pubspec:
+
+```
+transformers:
+- $dart2js:
+    checked: false
+    minify: true
+    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']
+
+```
+  
 ## Roadmap
 
  * Add tests

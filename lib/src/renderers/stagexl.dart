@@ -8,46 +8,34 @@ enum StageXLDisplayMode { FULLSCREEN, FIXED }
 
 /// StageXL WebGL renderer for displaying CA on the web
 class StageXLRenderer extends CARenderer {
-  int _gridWidth;
-  int _gridHeight;
-  int _stageWidth;
-  int _stageHeight;
-
-  final CanvasElement _canvas;
-  Stage _stage;
-  StageXLDisplayMode _displayMode;
-
-  num get width => _stageWidth;
-  num get height => _stageHeight;
-
-  num get gridWidth => _gridWidth;
-  num get gridHeight => _gridHeight;
-
-  num _cellHeight;
-  num _cellWidth;
+  int _width;
+  int _height;
 
   Array2d<Bitmap> _bitmapGrid;
-  Sprite _sprite;
 
-  StageXLRenderer(
+  StageXLRenderer({int width, int height})
+      : _width = width ?? 128,
+        _height = height ?? 128;
+
+  /// StageXL specific setup
+  initStageXL(
       {CanvasElement canvas,
-      StageXLDisplayMode displayMode,
+      StageXLDisplayMode displayMode: StageXLDisplayMode.FIXED,
       num stageWidth,
       num stageHeight,
-      int gridWidth,
-      int gridHeight,
-      List<int> palette})
-      : _canvas = canvas,
-        _stageWidth = stageWidth ?? 128,
-        _stageHeight = stageHeight ?? 128,
-        _gridWidth = gridWidth ?? 128,
-        _gridHeight = gridHeight ?? 128,
-        _displayMode = displayMode {
-    StageXL.stageOptions.renderEngine = RenderEngine.WebGL;
-    StageXL.stageOptions.backgroundColor = Color.Black;
+      List<int> palette}) {
+    print('Stage XL: ${_width}x$_height (${stageWidth}x${stageHeight}px)');
 
-    // handle resize events...
-    switch (_displayMode) {
+    final cellWidth = stageWidth / _width;
+    final cellHeight = stageHeight / _height;
+
+    StageXL.stageOptions
+      ..renderEngine = RenderEngine.WebGL
+      ..backgroundColor = Color.Black
+      ..stageAlign = StageAlign.NONE;
+
+    // handle scaling
+    switch (displayMode) {
       case StageXLDisplayMode.FIXED:
         StageXL.stageOptions.stageScaleMode = StageScaleMode.SHOW_ALL;
         break;
@@ -56,90 +44,54 @@ class StageXLRenderer extends CARenderer {
         break;
     }
 
-    StageXL.stageOptions.stageAlign = StageAlign.NONE;
+    final _stage = new Stage(canvas, width: stageWidth, height: stageHeight);
 
-    // TODO: pass in options here
-    _stage = new Stage(_canvas, width: width, height: height);
-
-    print(
-        'Stage XL setup: ${width}x${height} grid:  ${_gridWidth}x${gridHeight}');
-
-    var renderLoop = new RenderLoop();
-    renderLoop.addStage(_stage);
-
-    _bitmapGrid = new Array2d<Bitmap>(_gridWidth, _gridHeight, null);
-    _sprite = new Sprite();
-
-    _cellWidth = _stageWidth / gridWidth;
-    _cellHeight = stageHeight / gridHeight;
-
-    var container = new BitmapContainer();
-
+    // setup the bitmap texture...
+    final container = new BitmapContainer();
+    _bitmapGrid = new Array2d<Bitmap>(_width, _height, null);
     for (num x = 0; x < _bitmapGrid.width; x++) {
       for (num y = 0; y < _bitmapGrid.height; y++) {
-        var bitmap = new Bitmap()
-          ..x = x * _cellWidth
-          ..y = y * _cellHeight
+        final bitmap = new Bitmap()
+          ..x = x * cellWidth
+          ..y = y * cellHeight
           ..bitmapData = null;
-//        _sprite.addChild(bitmap);
         container.addChild(bitmap);
         _bitmapGrid.set(x, y, bitmap);
       }
     }
 
-    _palette = new BitmapData(_cellWidth * 16, _cellHeight);
+    // setup the color palette
+    _palette = new BitmapData(cellWidth * 16, cellHeight);
     _stage.addChild(container);
-    if (palette != null && palette.length > 0) {
-      var shape = new Shape();
-      for (int i = 0; i < palette.length; i++) {
-        shape.graphics.beginPath();
-        shape.graphics.rect(i * _cellWidth, 0, _cellWidth, _cellHeight);
-        shape.graphics.fillColor(palette[i]);
-//          _palette.setPixel(0, _paletteIndex.length, color);
-//        _paletteIndex.add(color);
-      }
-      _palette.draw(shape);
-      _paletteFrames = _palette.sliceIntoFrames(_cellWidth, _cellHeight);
+    final shape = new Shape();
+    for (var i = 0; i < palette.length; i++)
+      shape.graphics
+        ..beginPath()
+        ..rect(i * cellWidth, 0, cellWidth, cellHeight)
+        ..fillColor(palette[i]);
 
-      for (int i = 0; i < palette.length; i++) {
-        print(
-            '$i palette: ${palette} map: ${_paletteMap} frames: ${_paletteFrames}');
-        _paletteMap[palette[i]] = _paletteFrames[i];
-      }
-    }
+    _palette.draw(shape);
+    _paletteFrames = _palette.sliceIntoFrames(cellWidth, cellHeight);
 
-    // add the sprite
-//    _stage.addChild(_sprite);
+    for (var i = 0; i < palette.length; i++)
+      _paletteMap[palette[i]] = _paletteFrames[i];
 
-    // output the size of stage.contentRectangle
-    _stage.onResize.listen((e) => print(_stage.contentRectangle));
+    // setup render loop
+    new RenderLoop()..addStage(_stage);
   }
 
   BitmapData _palette;
-  Map<int, BitmapData> _paletteMap = {};
+  final Map<int, BitmapData> _paletteMap = {};
   List<BitmapData> _paletteFrames;
-  List<int> _paletteIndex = [];
 
+  @override
   void render(Array2d<int> renderData) {
-//    num cellWidth = (width / renderData.width);
-//    num cellHeight = (height / renderData.height);
-
     for (num x = 0; x < renderData.width; x++) {
       for (num y = 0; y < renderData.height; y++) {
         final color = renderData.get(x, y);
-        if (color == null) continue;
 
-//        if (!_paletteIndex.contains(color)) {
-//          var shape = new Shape();
-//          shape.graphics.beginPath();
-//          shape.graphics.rect(_paletteIndex.length*_cellWidth, 0, _cellWidth, _cellHeight);
-//          shape.graphics.fillColor(color);
-//          _palette.draw(shape);
-////          _palette.setPixel(0, _paletteIndex.length, color);
-//          _paletteIndex.add(color);
-//          _paletteFrames = _palette.sliceIntoFrames(1, 1);
-//          _paletteMap[color] = _paletteFrames.last;
-//        }
+        // Patches pass nulls
+        if (color == null) continue;
         _bitmapGrid.get(x, y).bitmapData = _paletteMap[color];
       }
     }
