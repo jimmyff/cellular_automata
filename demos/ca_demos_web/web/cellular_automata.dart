@@ -18,23 +18,19 @@ void startSimulation(
     num worldHeight,
     num stageWidth,
     num stageHeight,
-    num speed_ms,
+    num speedMs,
     MathematicalGenerators mathematicalGenerator,
     StageXLDisplayMode displayMode,
     CanvasElement canvas}) {
+  print('Cellular Automata Demo');
+  print('World: ${worldWidth}x$worldHeight');
+  print('Stage: ${stageWidth}x$stageHeight');
+  print('Speed: $speedMs');
+
   final world = new CellWorld<GameOfLifeStates>(
       width: worldWidth,
       height: worldHeight,
       defaultState: GameOfLifeStates.DEAD);
-
-  final sim = new Simulator(
-      world: world,
-      rules: rules,
-      generationDuration: new Duration(milliseconds: speed_ms),
-      generator: new MathematicalGenerator<GameOfLifeStates>(
-          type: mathematicalGenerator,
-          valueTrue: GameOfLifeStates.ALIVE_BORN,
-          valueFalse: GameOfLifeStates.DEAD));
 
   final palette = new Map<GameOfLifeStates, int>.from({
     GameOfLifeStates.DEAD: Color.Blue,
@@ -43,6 +39,16 @@ void startSimulation(
     GameOfLifeStates.ALIVE: Color.Yellow,
     GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
   });
+
+  final sim = new Simulator(
+      world: world,
+      rules: rules,
+      generationDuration: new Duration(milliseconds: speedMs),
+      palette: palette,
+      generator: new MathematicalGenerator<GameOfLifeStates>(
+          type: mathematicalGenerator,
+          valueTrue: GameOfLifeStates.ALIVE_BORN,
+          valueFalse: GameOfLifeStates.DEAD));
 
   final renderer = new StageXLRenderer(width: worldWidth, height: worldHeight)
     ..initStageXL(
@@ -54,10 +60,9 @@ void startSimulation(
     );
 
   // render loop (wire the simulation & renderer together)
-  sim.onRender.listen((CellWorld world) {
+  sim.onRender.listen((Array2d renderData) {
     // render the cell world state
-    renderer
-        .render(world.applyPalette<int>(changesOnly: true, palette: palette));
+    renderer.render(renderData);
   });
 
   sim.start(delay: new Duration(milliseconds: 100));
@@ -127,7 +132,7 @@ void _initSimulation([dynamic _]) {
       stageWidth: stageWidth,
       mathematicalGenerator: generator,
       displayMode: displayMode,
-      speed_ms: speedMs,
+      speedMs: speedMs,
       canvas: querySelector('#stage')
         ..style.width = '${stageWidth}px'
         ..style.height = '${stageHeight}px');

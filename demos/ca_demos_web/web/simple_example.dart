@@ -10,18 +10,7 @@ import 'package:stagexl/src/ui/color.dart';
 
 // Simple example of using cellular_automata
 void main() {
-  // Create the simulator object. This holds the world (the grid) and
-  // the rules (the cellular automaton). It also controls the seeding & timing
-  final sim = new Simulator(
-      world: new CellWorld<GameOfLifeStates>(
-          width: 64, height: 64, defaultState: GameOfLifeStates.DEAD),
-      rules: new GameOfLife(),
-      generationDuration: new Duration(milliseconds: 80),
-      generator: new MathematicalGenerator<GameOfLifeStates>(
-          type: MathematicalGenerators.RANDOM,
-          valueTrue: GameOfLifeStates.ALIVE_BORN,
-          valueFalse: GameOfLifeStates.DEAD));
-
+  // configure the palette
   final palette = new Map<GameOfLifeStates, int>.from({
     GameOfLifeStates.DEAD: Color.Blue,
     GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
@@ -29,6 +18,19 @@ void main() {
     GameOfLifeStates.ALIVE: Color.Yellow,
     GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
   });
+
+  // Create the simulator object. This holds the world (the grid) and
+  // the rules (the cellular automaton). It also controls the seeding & timing
+  final sim = new Simulator(
+      world: new CellWorld<GameOfLifeStates>(
+          width: 64, height: 64, defaultState: GameOfLifeStates.DEAD),
+      rules: new GameOfLife(),
+      generationDuration: new Duration(milliseconds: 50),
+      palette: palette,
+      generator: new MathematicalGenerator<GameOfLifeStates>(
+          type: MathematicalGenerators.RANDOM,
+          valueTrue: GameOfLifeStates.ALIVE_BORN,
+          valueFalse: GameOfLifeStates.DEAD));
 
   // create the renderer (StageXL in a web context)
   final renderer = new StageXLRenderer(width: 64, height: 64)
@@ -40,10 +42,10 @@ void main() {
     );
 
   // render loop (wire the simulation & renderer together)
-  sim.onRender.listen((CellWorld world) {
+  sim.onRender.listen((Array2d renderData) {
     // render the cell world state
-    renderer
-        .render(world.applyPalette<int>(changesOnly: true, palette: palette));
+    renderer.render(renderData);
+    //world.applyPalette<int>(changesOnly: true, palette: palette)
   });
 
   // start the simulation

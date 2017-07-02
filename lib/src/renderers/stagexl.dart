@@ -1,8 +1,8 @@
 import 'dart:html';
 import 'package:stagexl/stagexl.dart';
 
-import 'package:cellular_automata/src/renderers/_ca_renderer.dart';
 import 'package:cellular_automata/src/util/array_2d.dart';
+import 'package:cellular_automata/src/renderers/_ca_renderer.dart';
 
 enum StageXLDisplayMode { FULLSCREEN, FIXED }
 
@@ -11,6 +11,7 @@ class StageXLRenderer extends CARenderer {
   int _width;
   int _height;
 
+  final _paletteMap = <int, BitmapData>{};
   Array2d<Bitmap> _bitmapGrid;
 
   StageXLRenderer({int width, int height})
@@ -18,16 +19,16 @@ class StageXLRenderer extends CARenderer {
         _height = height ?? 128;
 
   /// StageXL specific setup
-  initStageXL(
+  void initStageXL(
       {CanvasElement canvas,
       StageXLDisplayMode displayMode: StageXLDisplayMode.FIXED,
-      num stageWidth,
-      num stageHeight,
+      num stageWidth: 256,
+      num stageHeight: 256,
       List<int> palette}) {
     print('Stage XL: ${_width}x$_height (${stageWidth}x${stageHeight}px)');
 
-    final cellWidth = stageWidth / _width;
-    final cellHeight = stageHeight / _height;
+    final cellWidth = (stageWidth / _width).round();
+    final cellHeight = (stageHeight / _height).round();
 
     StageXL.stageOptions
       ..renderEngine = RenderEngine.WebGL
@@ -59,10 +60,11 @@ class StageXLRenderer extends CARenderer {
         _bitmapGrid.set(x, y, bitmap);
       }
     }
+    _stage.addChild(container);
 
     // setup the color palette
-    _palette = new BitmapData(cellWidth * 16, cellHeight);
-    _stage.addChild(container);
+    List<BitmapData> _paletteFrames;
+    final _palette = new BitmapData(cellWidth * palette.length, cellHeight);
     final shape = new Shape();
     for (var i = 0; i < palette.length; i++)
       shape.graphics
@@ -80,20 +82,13 @@ class StageXLRenderer extends CARenderer {
     new RenderLoop()..addStage(_stage);
   }
 
-  BitmapData _palette;
-  final Map<int, BitmapData> _paletteMap = {};
-  List<BitmapData> _paletteFrames;
-
   @override
   void render(Array2d<int> renderData) {
-    for (num x = 0; x < renderData.width; x++) {
+    for (num x = 0; x < renderData.width; x++)
       for (num y = 0; y < renderData.height; y++) {
         final color = renderData.get(x, y);
-
-        // Patches pass nulls
-        if (color == null) continue;
+        if (color == null) continue; // Patches pass nulls if no change
         _bitmapGrid.get(x, y).bitmapData = _paletteMap[color];
       }
-    }
   }
 }

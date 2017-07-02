@@ -44,7 +44,7 @@ class MathematicalGenerator<T> extends CAGenerator {
     MathematicalGenerators.SIERPINSKI_LEVEL10: (int x, int y) =>
         ((x ^ y) + x - y) % 1024 == 0,
     MathematicalGenerators.SIERPINSKI_MOUNTAINS: (int x, int y) =>
-        ((x ^ y) + y - x) == 0 || ((x ^ y) + y - x) % y == 0,
+        ((x ^ y) + y - x) == 0 || ((x ^ y) + y - x).remainder(y) == 0,
 //    MathematicalGenerators.STABLE: (int x, int y) =>
 //      (x ^ y / 3) % 2,
 

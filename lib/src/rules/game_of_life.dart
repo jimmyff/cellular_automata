@@ -22,6 +22,11 @@ class GameOfLife extends CARules {
   };
 
   @override
+  Array2d<bool> whatToProcess(Array2d grid, CellWorld world) =>
+      world.activateStatesMooresNeighbors(
+          [GameOfLifeStates.ALIVE_BORN, GameOfLifeStates.ALIVE], grid);
+
+  @override
   GameOfLifeStates calculateState(int x, int y, CellWorld world) {
     final GameOfLifeStates currentState = world.getState(x, y);
     final List<GameOfLifeStates> neighborhood = world.getNeighborhood(x, y);

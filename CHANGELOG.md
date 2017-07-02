@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2
+
+- Optimised cell processing, now only processes cells that neighbor active states
+- Added tests (more to add)
 
 ## 0.1
 
