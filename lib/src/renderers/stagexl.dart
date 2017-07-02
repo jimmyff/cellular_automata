@@ -33,6 +33,8 @@ class StageXLRenderer extends CARenderer {
     StageXL.stageOptions
       ..renderEngine = RenderEngine.WebGL
       ..backgroundColor = Color.Black
+      ..antialias = false
+      ..stageRenderMode = StageRenderMode.AUTO
       ..stageAlign = StageAlign.NONE;
 
     // handle scaling
@@ -64,16 +66,18 @@ class StageXLRenderer extends CARenderer {
 
     // setup the color palette
     List<BitmapData> _paletteFrames;
-    final _palette = new BitmapData(cellWidth * palette.length, cellHeight);
+    final _palette =
+        new BitmapData((cellWidth + 2) * palette.length, (cellHeight + 2));
     final shape = new Shape();
     for (var i = 0; i < palette.length; i++)
       shape.graphics
         ..beginPath()
-        ..rect(i * cellWidth, 0, cellWidth, cellHeight)
+        ..rect(i * (cellWidth + 2), 0, cellWidth + 2, cellHeight + 2)
         ..fillColor(palette[i]);
 
     _palette.draw(shape);
-    _paletteFrames = _palette.sliceIntoFrames(cellWidth, cellHeight);
+    _paletteFrames = _palette.sliceIntoFrames(cellWidth, cellHeight,
+        frameMargin: 1, frameSpacing: 2);
 
     for (var i = 0; i < palette.length; i++)
       _paletteMap[palette[i]] = _paletteFrames[i];

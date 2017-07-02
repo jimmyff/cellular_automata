@@ -87,5 +87,7 @@ class MathematicalGenerator<T> extends CAGenerator {
     // pick a random generator if not set
     _type ??= MathematicalGenerators.values[
         new math.Random().nextInt(MathematicalGenerators.values.length)];
+
+    print('Generator: ${_type.toString()}');
   }
 }

@@ -4,6 +4,7 @@
 
 - Optimised cell processing, now only processes cells that neighbor active states
 - Added tests (more to add)
+- Improved StageXL bitmap colours crispness by adding frame margin 
 
 ## 0.1
 
