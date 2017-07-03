@@ -12,11 +12,11 @@ import 'package:stagexl/src/ui/color.dart';
 void main() {
   // configure the palette
   final palette = new Map<GameOfLifeStates, int>.from({
-    GameOfLifeStates.DEAD: Color.Blue,
+    GameOfLifeStates.DEAD: Color.Black,
     GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
-    GameOfLifeStates.DEAD_OVER_POPULATED: Color.BlueViolet,
-    GameOfLifeStates.ALIVE: Color.Yellow,
-    GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
+    GameOfLifeStates.DEAD_OVER_POPULATED: Color.DarkSlateBlue,
+    GameOfLifeStates.ALIVE: Color.Pink,
+    GameOfLifeStates.ALIVE_BORN: Color.HotPink,
   });
 
   // Create the simulator object. This holds the world (the grid) and

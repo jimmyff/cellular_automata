@@ -141,7 +141,8 @@ class CellWorld<T> {
 
 // If a rule wants to process active cells and moores neighbors they can use this
   Array2d<bool> activateStatesMooresNeighbors<T>(
-      List<T> activeStates, Array2d grid) {
+      List<T> activeStates, Array2d grid,
+      [List<T> processStates]) {
 //    final List<T> l = grid.toList(growable: false);
     final s = new List<bool>.filled(grid.length, false, growable: false);
     final o = new Array2d<bool>(grid.width, grid.height, false);
@@ -154,10 +155,11 @@ class CellWorld<T> {
               o.set(_wrap(x2, 0, width), _wrap(y2, 0, height), true);
             }
           }
-
-          s[_getIndex(x, y)] = true;
-          _neighborsIndices(x, y)..forEach((int i) => s[i] = true);
         }
+        // if we just want to process the cells not neighbors
+        else if (processStates != null &&
+            processStates.contains(grid.get(x, y)))
+          o.set(_wrap(x, 0, width), _wrap(y, 0, height), true);
 
     return o;
     //print (grid);
