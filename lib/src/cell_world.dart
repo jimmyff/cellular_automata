@@ -48,19 +48,6 @@ class CellWorld<T> {
     return x + (y * width);
   }
 
-  _neighborsIndices(int x, int y) {
-    final List<int> adj = new List<int>();
-    // moores
-    for (int k = y - 1; k <= y + 1; k++) {
-      for (int j = x - 1; j <= y + 1; j++) {
-        if (j != x || k != y) {
-          adj.add(_getIndex(_wrap(j, 0, width), _wrap(k, 0, height)));
-        }
-      }
-    }
-    return adj;
-  }
-
   /// returns neighboring cells
   List<T> getNeighborhood(int x, int y, {String system: 'moore'}) {
     switch (system) {
@@ -114,6 +101,10 @@ class CellWorld<T> {
   void saveGeneration(Array2d<T> array2d) {
     _generations.add(array2d);
     if (_generations.length > 10) _generations.removeRange(0, 1);
+  }
+
+  void stepBack() {
+    if (_generations.length > 1) _generations.removeLast();
   }
 
   /// Apply CA Rules on a new generation

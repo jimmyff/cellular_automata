@@ -1,6 +1,6 @@
 import 'dart:async';
 
-Stream<int> timer(Duration interval, [int maxCount]) {
+Stream<int> timeController(Duration interval, [int maxCount]) {
   StreamController<int> controller;
   Timer timer;
   int counter = 0;

@@ -96,6 +96,10 @@ void _initSimulation([dynamic _]) {
       worldWidth = (stageWidth / renderSize).round();
       worldHeight = (stageHeight / renderSize).round();
       bodyClass = 'stage-full-window';
+
+      // TODO: this should stop current simulation
+      window.onResize.listen(_initSimulation);
+
       break;
     case 'fixed':
     default:
@@ -200,5 +204,4 @@ Future<Null> main() async {
   // load the request parameters
   await initParams();
   _initSimulation();
-  window.onResize.listen(_initSimulation);
 }

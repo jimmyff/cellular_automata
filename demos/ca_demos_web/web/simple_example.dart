@@ -45,8 +45,18 @@ void main() {
   sim.onRender.listen((Array2d renderData) {
     // render the cell world state
     renderer.render(renderData);
-    //world.applyPalette<int>(changesOnly: true, palette: palette)
   });
+
+  // attach controls
+  final ButtonElement back = querySelector('#controls_back');
+  final ButtonElement pause = querySelector('#controls_pause');
+  final ButtonElement play = querySelector('#controls_play');
+  final ButtonElement forward = querySelector('#controls_forward');
+
+  pause.onClick.listen((e) => sim.pause());
+  play.onClick.listen((e) => sim.resume());
+  back.onClick.listen((e) => sim.stepBack());
+  forward.onClick.listen((e) => sim.stepForward());
 
   // start the simulation
   sim.start();

@@ -10,6 +10,8 @@ A cellular automata library / playground written in Dart. Happily accepting pull
 ## Features
 
  * Generators to seed the simulation
+ * Map states to colours/characters for rendering
+ * Controls: pause, resume, stepBack, stepForward
  * Current renderers:
    * StageXL: WebGL, fullscreen support
   
@@ -47,7 +49,6 @@ transformers:
  * Transitions for switching between two simulations
  * Multiple simulations/rule-sets running in a single scene
  * Generated color palettes
- * Simulation controls (pause, reset, speed etc)
  * Interactive mode (edit mode)
  * Analysis tools (histograms for state counts)
  * Add an LED Matrix renderer for raspberry pi using GPIO pins
