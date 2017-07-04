@@ -7,9 +7,8 @@ import 'dart:async';
 import 'package:params/client.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/renderer_stagexl.dart';
+import 'package:cellular_automata/renderer_canvas.dart';
 import 'package:cellular_automata/rules.dart';
-import 'package:stagexl/src/ui/color.dart';
 
 // Fully featured example of using cellular_automata
 void startSimulation({
@@ -19,7 +18,7 @@ void startSimulation({
   num stageWidth,
   num stageHeight,
   num speedMs,
-  StageXLDisplayMode displayMode,
+  CanvasDisplayMode displayMode,
   CanvasElement canvas,
   CellWorld world,
   Map palette,
@@ -27,7 +26,7 @@ void startSimulation({
 }) {
   print('Cellular Automata Demo');
   print('World: ${worldWidth}x$worldHeight');
-  print('Stage: ${stageWidth}x$stageHeight');
+  print('Canvas: ${stageWidth}x$stageHeight');
   print('Speed: $speedMs');
 
   final sim = new Simulator(
@@ -37,13 +36,12 @@ void startSimulation({
       palette: palette,
       generator: generator);
 
-  final renderer = new StageXLRenderer(width: worldWidth, height: worldHeight)
-    ..initStageXL(
+  final renderer = new CanvasRenderer(width: worldWidth, height: worldHeight)
+    ..initCanvas(
       canvas: canvas,
       displayMode: displayMode,
-      stageWidth: stageWidth,
-      stageHeight: stageHeight,
-      palette: palette.values.toList(growable: false),
+      canvasWidth: stageWidth,
+      canvasHeight: stageHeight,
     );
 
   // render loop (wire the simulation & renderer together)
@@ -84,13 +82,13 @@ void _initSimulation([dynamic _]) {
       generatorType = MathematicalGenerators.values[gens.indexOf(gen)];
   }
 
-  StageXLDisplayMode displayMode;
+  CanvasDisplayMode displayMode;
 
   String bodyClass;
 
-  switch (params['stage']) {
+  switch (params['display']) {
     case 'fullscreen':
-      displayMode = StageXLDisplayMode.FULLSCREEN;
+      displayMode = CanvasDisplayMode.FULLSCREEN;
       stageWidth = window.innerWidth;
       stageHeight = window.innerHeight;
       worldWidth = (stageWidth / renderSize).round();
@@ -103,7 +101,7 @@ void _initSimulation([dynamic _]) {
       break;
     case 'fixed':
     default:
-      displayMode = StageXLDisplayMode.FIXED;
+      displayMode = CanvasDisplayMode.FIXED;
       stageWidth = worldWidth * renderSize;
       stageHeight = worldHeight * renderSize;
       bodyClass = 'stage-fixed-size';
@@ -119,12 +117,12 @@ void _initSimulation([dynamic _]) {
           height: worldHeight,
           defaultState: GameOfLifeStates.DEAD);
 
-      palette = new Map<GameOfLifeStates, int>.from({
-        GameOfLifeStates.DEAD: Color.Blue,
-        GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
-        GameOfLifeStates.DEAD_OVER_POPULATED: Color.BlueViolet,
-        GameOfLifeStates.ALIVE: Color.Yellow,
-        GameOfLifeStates.ALIVE_BORN: Color.LightYellow,
+      palette = new Map<GameOfLifeStates, String>.from({
+        GameOfLifeStates.DEAD: '#0000FF',
+        GameOfLifeStates.DEAD_UNDER_POPULATED: '#00008B',
+        GameOfLifeStates.DEAD_OVER_POPULATED: '#8A2BE2',
+        GameOfLifeStates.ALIVE: '#FFFE01',
+        GameOfLifeStates.ALIVE_BORN: '#FEFEE0',
       });
 
       generator = new MathematicalGenerator<GameOfLifeStates>(
@@ -138,9 +136,9 @@ void _initSimulation([dynamic _]) {
       world = new CellWorld<bool>(
           width: worldWidth, height: worldHeight, defaultState: false);
 
-      palette = new Map<bool, int>.from({
-        false: Color.DarkRed,
-        true: Color.GreenYellow,
+      palette = new Map<bool, String>.from({
+        false: '#8B0000',
+        true: '#ADFE2F',
       });
 
       generator = new MathematicalGenerator<bool>(
@@ -154,10 +152,10 @@ void _initSimulation([dynamic _]) {
           height: worldHeight,
           defaultState: BriansBrainStates.OFF);
 
-      palette = new Map<BriansBrainStates, int>.from({
-        BriansBrainStates.OFF: Color.DarkOliveGreen,
-        BriansBrainStates.DYING: Color.OrangeRed,
-        BriansBrainStates.ON: Color.Orange,
+      palette = new Map<BriansBrainStates, String>.from({
+        BriansBrainStates.OFF: '#556B2F',
+        BriansBrainStates.DYING: '#FF4500',
+        BriansBrainStates.ON: '#FFA500',
       });
 
       generator = new MathematicalGenerator<BriansBrainStates>(
@@ -171,12 +169,12 @@ void _initSimulation([dynamic _]) {
       world = new CellWorld<int>(
           width: worldWidth, height: worldHeight, defaultState: 0);
 
-      palette = new Map<int, int>.from({
-        0: Color.Black,
-        1: Color.Yellow,
-        2: Color.Red,
-        3: Color.Green,
-        4: Color.Blue,
+      palette = new Map<int, String>.from({
+        0: '#000000',
+        1: '#FFFE01',
+        2: '#FFFE01',
+        3: '#FFFE01',
+        4: '#FFFE01',
       });
 
       generator = new MathematicalGenerator<int>(
@@ -195,7 +193,7 @@ void _initSimulation([dynamic _]) {
       palette: palette,
       displayMode: displayMode,
       speedMs: speedMs,
-      canvas: querySelector('#stage')
+      canvas: querySelector('#canvas')
         ..style.width = '${stageWidth}px'
         ..style.height = '${stageHeight}px');
 }

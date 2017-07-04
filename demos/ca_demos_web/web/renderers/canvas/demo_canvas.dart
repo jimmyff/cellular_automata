@@ -6,7 +6,7 @@ import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/renderer_canvas.dart';
 import 'package:cellular_automata/rules.dart';
 
-// Simple example of using cellular_automata
+// Canvas example of using cellular_automata
 void main() {
   // configure the palette
   final palette = new Map<GameOfLifeStates, String>.from({

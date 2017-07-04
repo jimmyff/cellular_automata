@@ -11,6 +11,9 @@
       <excludeFolder url="file://$MODULE_DIR$/demos/ca_demos_web/packages" />
       <excludeFolder url="file://$MODULE_DIR$/demos/ca_demos_web/tool/packages" />
       <excludeFolder url="file://$MODULE_DIR$/demos/ca_demos_web/web/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/demos/ca_demos_web/web/renderers/canvas/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/demos/ca_demos_web/web/renderers/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/demos/ca_demos_web/web/renderers/stagexl/packages" />
       <excludeFolder url="file://$MODULE_DIR$/doc" />
       <excludeFolder url="file://$MODULE_DIR$/packages" />
       <excludeFolder url="file://$MODULE_DIR$/test/packages" />

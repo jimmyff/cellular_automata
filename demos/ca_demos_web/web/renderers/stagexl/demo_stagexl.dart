@@ -3,18 +3,20 @@
 
 import 'dart:html';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/renderer_canvas.dart';
+import 'package:cellular_automata/renderer_stagexl.dart';
 import 'package:cellular_automata/rules.dart';
 
-// Simple example of using cellular_automata
+import 'package:stagexl/src/ui/color.dart';
+
+// Stage XL example of using cellular_automata
 void main() {
   // configure the palette
-  final palette = new Map<GameOfLifeStates, String>.from({
-    GameOfLifeStates.DEAD: '#000',
-    GameOfLifeStates.DEAD_UNDER_POPULATED: '#483D8B',
-    GameOfLifeStates.DEAD_OVER_POPULATED: '#00008B',
-    GameOfLifeStates.ALIVE: '#FF69B4',
-    GameOfLifeStates.ALIVE_BORN: '#FFC0CB',
+  final palette = new Map<GameOfLifeStates, int>.from({
+    GameOfLifeStates.DEAD: Color.Black,
+    GameOfLifeStates.DEAD_UNDER_POPULATED: Color.DarkBlue,
+    GameOfLifeStates.DEAD_OVER_POPULATED: Color.DarkSlateBlue,
+    GameOfLifeStates.ALIVE: Color.Pink,
+    GameOfLifeStates.ALIVE_BORN: Color.HotPink,
   });
 
   // Create the simulator object. This holds the world (the grid) and
@@ -31,11 +33,12 @@ void main() {
           valueFalse: GameOfLifeStates.DEAD));
 
   // create the renderer (StageXL in a web context)
-  final renderer = new CanvasRenderer(width: 64, height: 64)
-    ..initCanvas(
+  final renderer = new StageXLRenderer(width: 64, height: 64)
+    ..initStageXL(
       canvas: querySelector('#canvas'),
-      canvasWidth: 512,
-      canvasHeight: 512,
+      stageWidth: 512,
+      stageHeight: 512,
+      palette: palette.values.toList(growable: false),
     );
 
   // render loop (wire the simulation & renderer together)

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5
+
+- Added new default renderer for web: CanvasRenderer (StageXL had performance issues with large scenes)
+- Added demos for both StageXL and Canvas
+
 ## 0.4
 
 - Added 'Majority Vote' Rules
@@ -19,7 +24,6 @@
 - Optimised cell processing, now only processes cells that neighbor active states
 - Added tests (more to add)
 - Improved StageXL bitmap colours crispness by adding frame margin 
-
 ## 0.1
 
 - Refactored so Rule's cell-states are now passed as generic types in to the Cell World for better analyzer & tooling support

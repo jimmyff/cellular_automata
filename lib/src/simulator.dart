@@ -57,12 +57,13 @@ class Simulator {
 
   void stepForward() {
     if (!_timerSubscription.isPaused) _timerSubscription.pause();
-    tick();
+    _tick();
   }
 
   void stepBack() {
     if (!_timerSubscription.isPaused) _timerSubscription.pause();
     _world.stepBack();
+    if (_generationCounter > 0) _generationCounter--;
     _callRender(changesOnly: false);
   }
 
@@ -76,10 +77,10 @@ class Simulator {
 
     _timerDuration = speed ?? new Duration(seconds: 1);
     _timer = timeController(_timerDuration);
-    _timerSubscription = _timer.listen((int counter) => tick());
+    _timerSubscription = _timer.listen((int counter) => _tick());
   }
 
-  void tick() {
+  void _tick() {
     // calculate FPS
     _generationCounter++;
     final now = new DateTime.now().millisecondsSinceEpoch;

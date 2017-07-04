@@ -13,7 +13,8 @@ A cellular automata library / playground written in Dart. Happily accepting pull
  * Map states to colours/characters for rendering
  * Controls: pause, resume, stepBack, stepForward
  * Current renderers:
-   * StageXL: WebGL, fullscreen support
+   * Canvas: (Web), fullscreen support
+   * StageXL: (Web), WebGL, fullscreen support, (performance issues with big scenes)
   
 ## Implemented rules/simulations
   
