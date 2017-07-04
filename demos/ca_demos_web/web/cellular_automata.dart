@@ -152,8 +152,8 @@ void _initSimulation([dynamic _]) {
 
       palette = new Map<BriansBrainStates, int>.from({
         BriansBrainStates.OFF: Color.DarkOliveGreen,
-        BriansBrainStates.DYING: Color.LawnGreen,
-        BriansBrainStates.ON: Color.OrangeRed,
+        BriansBrainStates.DYING: Color.OrangeRed,
+        BriansBrainStates.ON: Color.Orange,
       });
 
       generator = new MathematicalGenerator<BriansBrainStates>(

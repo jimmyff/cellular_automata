@@ -38,9 +38,7 @@ transformers:
   
 ## Roadmap
 
- * Add tests
- * Performance information
- * Implement additional CA rules (Brain, Voting, WireWorld etc)
+ * Add more tests
  * Detect stale simulations for reset / next
  * Playlist of simulations
  * Transitions for switching between two simulations

@@ -23,14 +23,13 @@ class BriansBrain extends CARules {
     final BriansBrainStates currentState = world.getState(x, y);
     final List<BriansBrainStates> neighborhood = world.getNeighborhood(x, y);
 
-    // calculate the sum of alive neighbors
-    final sum =
-        neighborhood.fold(0, (a, BriansBrainStates b) => a + stateValue[b]);
-
     switch (currentState) {
       case BriansBrainStates.ON:
         return BriansBrainStates.DYING;
       case BriansBrainStates.OFF:
+        // calculate the sum of alive neighbors
+        final sum =
+            neighborhood.fold(0, (a, BriansBrainStates b) => a + stateValue[b]);
         if (sum == 2) return BriansBrainStates.ON;
         break;
       case BriansBrainStates.DYING:
