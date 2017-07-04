@@ -2,7 +2,7 @@ import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/util/array_2d.dart';
 
-/// Simple implementation of Conway's Game of Life (binary state)
+/// Simple implementation of *Conway's Game of Life* (binary state)
 class GameOfLifeSimple extends CARules {
   @override
   Array2d<bool> whatToProcess(Array2d grid, CellWorld world) =>

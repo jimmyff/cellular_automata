@@ -10,7 +10,7 @@ enum GameOfLifeStates {
   ALIVE_BORN
 }
 
-/// Implementation of Conway's Game of Life CA rules
+/// Implementation of *Conway's Game of Life*
 class GameOfLife extends CARules {
   // transforms the complex state in to simple alive/dead for computation
   final Map<GameOfLifeStates, int> stateValue = {

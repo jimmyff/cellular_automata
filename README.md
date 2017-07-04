@@ -15,9 +15,10 @@ A cellular automata library / playground written in Dart. Happily accepting pull
   
 ## Implemented rules/simulations
   
- * Conway's Game of Life [[code](https://github.com/jimmyff/cellular_automata/blob/master/lib/src/rules/game_of_life.dart)]
- * Conway's Game of Life Simple (binary states - only 24 lines of code!) [[code](https://github.com/jimmyff/cellular_automata/blob/master/lib/src/rules/game_of_life_simple.dart)]
- * Brian's Brain [[code](https://github.com/jimmyff/cellular_automata/blob/master/lib/src/rules/brians_brain.dart)]
+ * Conway's Game of Life [[source](https://github.com/jimmyff/cellular_automata/blob/master/lib/src/rules/game_of_life.dart)]
+ * Conway's Game of Life Simple (binary states) [[source](https://github.com/jimmyff/cellular_automata/blob/master/lib/src/rules/game_of_life_simple.dart)]
+ * Brian's Brain [[source](https://github.com/jimmyff/cellular_automata/blob/master/lib/src/rules/brians_brain.dart)]
+ * Majority Vote [[source](https://github.com/jimmyff/cellular_automata/blob/master/lib/src/rules/majority_vote.dart)]
   
 ## Demos
   
@@ -38,6 +39,8 @@ transformers:
   
 ## Roadmap
 
+ * Add multiple states to 'Majority Vote'
+ * Add a multiple states generator
  * Add more tests
  * Detect stale simulations for reset / next
  * Playlist of simulations

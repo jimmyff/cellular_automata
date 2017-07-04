@@ -4,7 +4,7 @@ import 'package:cellular_automata/src/util/array_2d.dart';
 
 enum BriansBrainStates { OFF, ON, DYING }
 
-/// Implementation of Conway's Game of Life CA rules
+/// Implementation of *Brians's Brain*
 class BriansBrain extends CARules {
   // transforms the complex state in to simple alive/dead for computation
   final Map<BriansBrainStates, int> stateValue = {

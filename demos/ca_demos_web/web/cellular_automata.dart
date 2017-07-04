@@ -161,6 +161,23 @@ void _initSimulation([dynamic _]) {
           valueTrue: BriansBrainStates.ON,
           valueFalse: BriansBrainStates.OFF);
       break;
+
+    case 'majority_vote':
+      rules = new MajorityVote();
+      world = new CellWorld<int>(
+          width: worldWidth, height: worldHeight, defaultState: 0);
+
+      palette = new Map<int, int>.from({
+        0: Color.Black,
+        1: Color.Yellow,
+        2: Color.Red,
+        3: Color.Green,
+        4: Color.Blue,
+      });
+
+      generator = new MathematicalGenerator<int>(
+          type: generatorType, valueTrue: 1, valueFalse: 0);
+      break;
   }
 
   startSimulation(

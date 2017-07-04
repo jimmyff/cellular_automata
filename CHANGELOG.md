@@ -1,8 +1,15 @@
 # Changelog
 
+## 0.4
+
+- Added 'Majority Vote' Rules
+- Optimised 'Brian's Brain' processing
+- Updated demos
+
+
 ## 0.3
 
-- Added 'Conway's Game of Life Simple' Rules - has binary states and only 24 lines of code
+- Added 'Conway's Game of Life Simple' Rules - has binary states and minimal code
 - Added 'Brian's Brain' Rules
 - Updated demos
 
