@@ -23,8 +23,10 @@ void main() {
   // the rules (the cellular automaton). It also controls the seeding & timing
   final sim = new Simulator(
       world: new CellWorld<GameOfLifeStates>(
-          width: 64, height: 64, defaultState: GameOfLifeStates.DEAD),
-      rules: new GameOfLife(),
+          rules: new GameOfLife(),
+          width: 64,
+          height: 64,
+          defaultState: GameOfLifeStates.DEAD),
       generationDuration: new Duration(milliseconds: 50),
       palette: palette,
       generator: new MathematicalGenerator<GameOfLifeStates>(

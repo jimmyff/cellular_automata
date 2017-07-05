@@ -23,7 +23,7 @@
     <p>Pub package: <a href="https://pub.dartlang.org/packages/cellular_automata">https://pub.dartlang.org/packages/cellular_automata</a></p>
     <br />
     <h3>Basic demo</h3>
-    <p>This is a very basic setup playing Conway's game of life.</p>
+    <p>This is a very basic playing Conway's game of life. It's configured with button controls to play/pause/step and it resets when the scene is becomes stable.</p>
     <canvas id="canvas" width="512" height="512"></canvas>
     <br />
     <div style="clear:both; width:512px; text-align:center;">
@@ -52,6 +52,7 @@
             <li><a href="cellular_automata.html?rules=brians_brain&display=fullscreen&render_size=8&speed_ms=50">Full screen (random generator)</a></li>
             <li><a href="cellular_automata.html?rules=brians_brain&width=256&height=256&display=fixed&render_size=3&generator=X_MOD_Y">256x256 [X_MOD_Y]</a></li>
             <li><a href="cellular_automata.html?rules=brians_brain&width=512&height=512&display=fixed&render_size=2&generator=X_MOD_Y">512x512 [X_MOD_Y] (slow)</a></li>
+            <li><a href="cellular_automata.html?rules=brians_brain&width=48&height=48&display=fixed&render_size=8&speed_ms=10">48x48  Stable scene demo (fast generations)</a></li>
         </ul>
 
         <li>Majority Vote</li>
@@ -74,8 +75,8 @@
 
     <h3>Renderers</h3>
     <ul>
-        <li>Canvas (recommended) renderer: <a href="/renderers/canvas/demo_canvas.html">Canvas demo</a></li>
-        <li>StageXL WebGL renderer: <a href="/renderers/stagexl/demo_stagexl.html">StageXL demo</a></li>
+        <li>Canvas (recommended) renderer: <a href="renderers/canvas/demo_canvas.html">Canvas demo</a></li>
+        <li>StageXL WebGL renderer: <a href="renderers/stagexl/demo_stagexl.html">StageXL demo</a></li>
     </ul>
 </body>
 </html>

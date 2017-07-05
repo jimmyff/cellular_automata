@@ -8,41 +8,61 @@ import 'package:cellular_automata/rules.dart';
 
 // Simple example of using cellular_automata
 void main() {
-  // configure the palette
-  final palette = new Map<GameOfLifeStates, String>.from({
-    GameOfLifeStates.DEAD: '#000',
-    GameOfLifeStates.DEAD_UNDER_POPULATED: '#483D8B',
-    GameOfLifeStates.DEAD_OVER_POPULATED: '#00008B',
-    GameOfLifeStates.ALIVE: '#FF69B4',
-    GameOfLifeStates.ALIVE_BORN: '#FFC0CB',
-  });
+  Simulator createSim() {
+    // configure the palette
+    final palette = new Map<GameOfLifeStates, String>.from({
+      GameOfLifeStates.DEAD: '#000',
+      GameOfLifeStates.DEAD_UNDER_POPULATED: '#483D8B',
+      GameOfLifeStates.DEAD_OVER_POPULATED: '#00008B',
+      GameOfLifeStates.ALIVE: '#FF69B4',
+      GameOfLifeStates.ALIVE_BORN: '#FFC0CB',
+    });
 
-  // Create the simulator object. This holds the world (the grid) and
-  // the rules (the cellular automaton). It also controls the seeding & timing
-  final sim = new Simulator(
-      world: new CellWorld<GameOfLifeStates>(
-          width: 64, height: 64, defaultState: GameOfLifeStates.DEAD),
-      rules: new GameOfLife(),
-      generationDuration: new Duration(milliseconds: 50),
-      palette: palette,
-      generator: new MathematicalGenerator<GameOfLifeStates>(
-          type: MathematicalGenerators.RANDOM,
-          valueTrue: GameOfLifeStates.ALIVE_BORN,
-          valueFalse: GameOfLifeStates.DEAD));
+    // Create the simulator object. This holds the world (the grid) and
+    // the rules (the cellular automaton). It also controls the seeding & timing
+    final sim = new Simulator(
+        world: new CellWorld<GameOfLifeStates>(
+          width: 64,
+          height: 64,
+          defaultState: GameOfLifeStates.DEAD,
+          rules: new GameOfLife(),
+        ),
+        generationDuration: new Duration(milliseconds: 50),
+        palette: palette,
+        generator: new MathematicalGenerator<GameOfLifeStates>(
+            type: MathematicalGenerators.RANDOM,
+            valueTrue: GameOfLifeStates.ALIVE_BORN,
+            valueFalse: GameOfLifeStates.DEAD));
 
-  // create the renderer (StageXL in a web context)
-  final renderer = new CanvasRenderer(width: 64, height: 64)
-    ..initCanvas(
-      canvas: querySelector('#canvas'),
-      canvasWidth: 512,
-      canvasHeight: 512,
-    );
+    // create the renderer (StageXL in a web context)
+    final renderer = new CanvasRenderer(width: 64, height: 64)
+      ..initCanvas(
+        canvas: querySelector('#canvas'),
+        canvasWidth: 512,
+        canvasHeight: 512,
+      );
 
-  // render loop (wire the simulation & renderer together)
-  sim.onRender.listen((Array2d renderData) {
-    // render the cell world state
-    renderer.render(renderData);
-  });
+    // render loop (wire the simulation & renderer together)
+    sim.onRender.listen((Array2d renderData) {
+      // render the cell world state
+      renderer.render(renderData);
+    });
+    return sim;
+  }
+
+  Simulator sim;
+
+  void startSim() {
+    sim = createSim();
+    sim.start();
+
+    sim.onStable.listen((bool s) {
+      sim.stop();
+      startSim();
+    });
+  }
+
+  startSim();
 
   // attach controls
   final ButtonElement back = querySelector('#controls_back');
@@ -54,7 +74,4 @@ void main() {
   play.onClick.listen((e) => sim.resume());
   back.onClick.listen((e) => sim.stepBack());
   forward.onClick.listen((e) => sim.stepForward());
-
-  // start the simulation
-  sim.start();
 }

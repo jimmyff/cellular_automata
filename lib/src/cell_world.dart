@@ -1,27 +1,66 @@
+library cellular_automata.cell_world;
+
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/util/array_2d.dart';
+import 'package:collection/collection.dart';
 
 /// Stores the world state
 class CellWorld<T> {
-  final List<Array2d<T>> _generations = [];
+  final List<Generation<T>> _generations = [];
 
   bool wrap = true;
 
-  int cellsProcessedCounter;
+  final _generationHistoryLength = 32;
+
+  int get activeCellCount =>
+      _generations.isEmpty ? 0 : generation(0).activeCells;
+
+  int get generationCounter => _generations.isEmpty ? 0 : generation(0).count;
 
   final T defaultState;
   final int width;
   final int height;
+  CARules rules;
 
-  /// returns the state of the world a number of generations ago
-  Array2d<T> generation([int ago = 0]) {
-    if (_generations.length - 1 < ago) return null;
-    return _generations[_generations.length - 1 - ago];
+  /// Checks to see if recent generations are identical or repeating
+  bool get isStable {
+    final Function eq = const ListEquality().equals;
+
+    // check if the last 3 generations were identical
+    if (_generations.length > 2) if (eq(
+            generation(0).activity, generation(1).activity) &&
+        eq(generation(0).activity, generation(2).activity)) return true;
+
+    // Checks for repeating patterns of activeCellCount
+    if (_generations.length > 24)
+      for (int i = 1; i <= 8; i++) {
+        bool stable = true;
+        // i = generation cycle count
+        for (int g = 0; g < 3; g++)
+          if (generation(g).activeCells !=
+              generation(g + (i * g)).activeCells) {
+            stable = false;
+            break;
+          }
+        if (stable) {
+          print('Stable scene detected! Repeating pattern $i');
+          return true;
+        }
+      }
+    return false;
   }
 
-  /// sets the state of a cell
-  void setState(int x, int y, T newState, [Array2d<T> array2d]) {
-    (array2d ?? generation()).set(x, y, newState);
+  /// Active cell percent considering total cells
+  int get activePercent {
+    if (_generations.isEmpty) return 100;
+    if (generation(0).activeCells == 0) return 0;
+    return ((generation(0).activeCells / (width * height)) * 100).round();
+  }
+
+  /// returns the state of the world a number of generations ago
+  Generation<T> generation([int ago = 0]) {
+    if (_generations.length - 1 < ago) return null;
+    return _generations[_generations.length - 1 - ago];
   }
 
   int _wrap(int v, int min, int max) =>
@@ -38,14 +77,7 @@ class CellWorld<T> {
       _x = x < 0 || x > (width - 1) ? defaultState : x;
       _y = y < 0 || y > (height - 1) ? defaultState : y;
     }
-    return generation(generationsAgo)?.get(_x, _y) ?? defaultState;
-  }
-
-  // TODO: need to move to array_2d
-  int _getIndex(int x, int y) {
-    assert(x >= 0 && x < width);
-    assert(y >= 0 && y < height);
-    return x + (y * width);
+    return generation(generationsAgo)?.states.get(_x, _y) ?? defaultState;
   }
 
   /// returns neighboring cells
@@ -68,7 +100,7 @@ class CellWorld<T> {
     }
   }
 
-  CellWorld({this.width, this.height, this.defaultState});
+  CellWorld({this.width, this.height, this.defaultState, this.rules});
 
   /// apply a palette to the world state
   Array2d<T> applyPalette<T>({
@@ -97,37 +129,41 @@ class CellWorld<T> {
     return output;
   }
 
-  /// Saves the genreation
-  void saveGeneration(Array2d<T> array2d) {
-    _generations.add(array2d);
-    if (_generations.length > 10) _generations.removeRange(0, 1);
-  }
-
   void stepBack() {
     if (_generations.length > 1) _generations.removeLast();
   }
 
-  /// Apply CA Rules on a new generation
-  void applyRules(CARules rules) {
-    final newGen = new Array2d<T>(width, height);
-    final whatToProcess = rules.whatToProcess(generation(), this);
+  void newGeneration(Array2d<T> newStateArray) =>
+      saveGeneration(new Generation<T>((generation()?.count ?? 0) + 1, width,
+          height, newStateArray, rules.whatToProcess(newStateArray, this)));
 
-    cellsProcessedCounter = 0;
+  /// Saves the generation
+  void saveGeneration(Generation<T> generation) {
+    _generations.add(generation);
+    if (_generations.length > _generationHistoryLength)
+      _generations.removeRange(0, 1);
+  }
+
+  /// Apply CA Rules on a new generation
+  void applyRules([CARules alternativeRules]) {
+    final newStateArray = new Array2d<T>(width, height);
+
+//    final whatToProcess = rules.whatToProcess(generation(), this);
 
     for (var x = 0; x < width; x++)
       for (var y = 0; y < height; y++)
-        if (whatToProcess.get(x, y)) {
-          cellsProcessedCounter++;
-          setState(x, y, rules.calculateState(x, y, this), newGen);
+        if (generation().activity.get(x, y)) {
+          newStateArray.set(
+              x, y, (alternativeRules ?? rules).calculateState(x, y, this));
         } else
-          setState(x, y, getState(x, y), newGen);
+          newStateArray.set(x, y, getState(x, y));
 
-    saveGeneration(newGen);
+    newGeneration(newStateArray);
   }
 
   /// Apply a generator on a new generation
   void applyGenerator(CAGenerator generator) {
-    saveGeneration(generator.generate(width, height));
+    newGeneration(generator.generate(width, height));
   }
 
 // If a rule wants to process active cells and moores neighbors they can use this
@@ -153,9 +189,5 @@ class CellWorld<T> {
           o.set(_wrap(x, 0, width), _wrap(y, 0, height), true);
 
     return o;
-    //print (grid);
-    //print (new Array2d<bool>.readonlyFrom(grid.width, s));
-//    throw 'fail';
-    return new Array2d<bool>.readonlyFrom(grid.width, s);
   }
 }

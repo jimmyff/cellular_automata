@@ -1,3 +1,5 @@
+library cellular_automata.simulator;
+
 import 'dart:core';
 import 'dart:async';
 
@@ -7,20 +9,17 @@ export 'package:cellular_automata/src/util/timer.dart';
 /// Simulation management class
 class Simulator {
   final CellWorld _world;
-  CARules _rules;
   Stream<int> _timer;
   StreamSubscription<int> _timerSubscription;
   Duration _timerDuration;
   final Duration _generationDuration;
 
-  CARules get rules => _rules;
-
-  int _generationCounter = 0;
+  int get generationCounter => _world.generationCounter;
   get fps => _fps.round();
   num _fps = 0;
-  get cp => _cp.round();
-  num _cp = 0;
-  int _lastGeneration;
+
+  int _lastGenerationTime;
+  int _stableCounter = 0; // counts the number of reported stable worlds
 
   final Map _palette;
 
@@ -28,14 +27,16 @@ class Simulator {
   final StreamController<Array2d> _onRender = new StreamController<Array2d>();
   Stream<Array2d> get onRender => _onRender.stream;
 
+  // stable stream
+  final StreamController<bool> _onStable = new StreamController<bool>();
+  Stream<bool> get onStable => _onStable.stream;
+
   Simulator(
       {CellWorld world,
-      CARules rules,
       Duration generationDuration,
       CAGenerator generator,
       Map palette})
       : _world = world,
-        _rules = rules,
         _palette = palette,
         _generationDuration = generationDuration {
     // apply a generator if specified
@@ -55,6 +56,9 @@ class Simulator {
   void pause() =>
       !_timerSubscription.isPaused ? _timerSubscription.pause() : null;
 
+  void stop() =>
+      _timerSubscription != null ? _timerSubscription.cancel() : null;
+
   void stepForward() {
     if (!_timerSubscription.isPaused) _timerSubscription.pause();
     _tick();
@@ -63,13 +67,22 @@ class Simulator {
   void stepBack() {
     if (!_timerSubscription.isPaused) _timerSubscription.pause();
     _world.stepBack();
-    if (_generationCounter > 0) _generationCounter--;
     _callRender(changesOnly: false);
   }
 
   void _callRender({bool changesOnly: true}) {
     _onRender
         .add(_world.applyPalette(palette: _palette, changesOnly: changesOnly));
+  }
+
+  void _calculateAverageFps() {
+    // calculate FPS
+    final now = new DateTime.now().millisecondsSinceEpoch;
+    if (_lastGenerationTime != null) {
+      final delta = (now - _lastGenerationTime);
+      if (delta > 0) _fps = (_fps + (1 / (delta / 1000))) / 2;
+    }
+    _lastGenerationTime = now;
   }
 
   Future<Null> initTimer(Duration speed, Duration delay) async {
@@ -81,21 +94,33 @@ class Simulator {
   }
 
   void _tick() {
-    // calculate FPS
-    _generationCounter++;
-    final now = new DateTime.now().millisecondsSinceEpoch;
-    if (_lastGeneration != null)
-      _fps = (_fps + (1 / ((now - _lastGeneration) / 1000))) / 2;
-    _lastGeneration = now;
-
-    // apply rules
-    _world.applyRules(_rules);
-    _cp = (_cp + _world.cellsProcessedCounter) / 2;
+    _world.applyRules();
     _callRender();
-    if (_generationCounter % 20 == 0)
-      print('Generation $_generationCounter. '
-          'fps: $fps/${(1000/_timerDuration.inMilliseconds).round()} '
-          'processed: ${(1/((_world.width*_world.height)/cp)*100).round()}%'
-          ' $cp/${_world.width*_world.height}');
+    _calculateAverageFps();
+
+    // log to console statistics
+    if (generationCounter %
+            (2000 / _generationDuration.inMilliseconds).round() ==
+        0)
+      print('Gen: $generationCounter | '
+          'Activity: ${_world.activePercent}% | '
+          'FPS: $fps/${(1000/_timerDuration.inMilliseconds).round()}');
+
+    // check if stable...
+    if (generationCounter % 20 == 0) {
+      if (_world.isStable) {
+        _stableCounter++;
+
+        final int activityPercent = _world.activePercent;
+        // based on percentage broadcast as stable
+        if ((activityPercent < 5) ||
+            (activityPercent < 10 && _stableCounter > 3) ||
+            (_stableCounter > 5)) _onStable.add(true);
+
+        print(
+            'Stable scene counter: x$_stableCounter World activity: $activityPercent%');
+      } else
+        _stableCounter = 0;
+    }
   }
 }

@@ -11,8 +11,7 @@ import 'package:cellular_automata/renderer_canvas.dart';
 import 'package:cellular_automata/rules.dart';
 
 // Fully featured example of using cellular_automata
-void startSimulation({
-  CARules rules,
+Simulator createSimulation({
   num worldWidth,
   num worldHeight,
   num stageWidth,
@@ -25,13 +24,9 @@ void startSimulation({
   CAGenerator generator,
 }) {
   print('Cellular Automata Demo');
-  print('World: ${worldWidth}x$worldHeight');
-  print('Canvas: ${stageWidth}x$stageHeight');
-  print('Speed: $speedMs');
 
   final sim = new Simulator(
       world: world,
-      rules: rules,
       generationDuration: new Duration(milliseconds: speedMs),
       palette: palette,
       generator: generator);
@@ -50,11 +45,11 @@ void startSimulation({
     renderer.render(renderData);
   });
 
-  sim.start(delay: new Duration(milliseconds: 100));
+  return sim;
 }
 
 // Process the input parameteres
-void _initSimulation([dynamic _]) {
+Simulator _initSimulation([dynamic _]) {
   num worldWidth = params['width'] != null ? int.parse(params['width']) : null;
   num worldHeight =
       params['height'] != null ? int.parse(params['height']) : null;
@@ -111,8 +106,8 @@ void _initSimulation([dynamic _]) {
 
   switch (params['rules' ?? 'game_of_life']) {
     case 'game_of_life':
-      rules = new GameOfLife();
       world = new CellWorld<GameOfLifeStates>(
+          rules: new GameOfLife(),
           width: worldWidth,
           height: worldHeight,
           defaultState: GameOfLifeStates.DEAD);
@@ -132,9 +127,11 @@ void _initSimulation([dynamic _]) {
       break;
 
     case 'game_of_life_simple':
-      rules = new GameOfLifeSimple();
       world = new CellWorld<bool>(
-          width: worldWidth, height: worldHeight, defaultState: false);
+          rules: new GameOfLifeSimple(),
+          width: worldWidth,
+          height: worldHeight,
+          defaultState: false);
 
       palette = new Map<bool, String>.from({
         false: '#8B0000',
@@ -146,8 +143,8 @@ void _initSimulation([dynamic _]) {
       break;
 
     case 'brians_brain':
-      rules = new BriansBrain();
       world = new CellWorld<BriansBrainStates>(
+          rules: new BriansBrain(),
           width: worldWidth,
           height: worldHeight,
           defaultState: BriansBrainStates.OFF);
@@ -165,9 +162,11 @@ void _initSimulation([dynamic _]) {
       break;
 
     case 'majority_vote':
-      rules = new MajorityVote();
       world = new CellWorld<int>(
-          width: worldWidth, height: worldHeight, defaultState: 0);
+          rules: new MajorityVote(),
+          width: worldWidth,
+          height: worldHeight,
+          defaultState: 0);
 
       palette = new Map<int, String>.from({
         0: '#000000',
@@ -182,8 +181,7 @@ void _initSimulation([dynamic _]) {
       break;
   }
 
-  startSimulation(
-      rules: rules,
+  return createSimulation(
       worldWidth: worldWidth,
       worldHeight: worldHeight,
       stageHeight: stageHeight,
@@ -201,5 +199,20 @@ void _initSimulation([dynamic _]) {
 Future<Null> main() async {
   // load the request parameters
   await initParams();
-  _initSimulation();
+  Simulator sim;
+
+  void startNewSim() {
+    sim = _initSimulation();
+
+    // render loop (wire the simulation & renderer together)
+    sim.onStable.listen((bool stale) {
+      print('Stale Scene: Resetting');
+      sim.stop();
+      startNewSim();
+    });
+
+    sim.start(delay: new Duration(milliseconds: 100));
+  }
+
+  startNewSim();
 }

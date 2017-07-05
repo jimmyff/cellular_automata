@@ -12,6 +12,7 @@ A cellular automata library / playground written in Dart. Happily accepting pull
  * Generators to seed the simulation
  * Map states to colours/characters for rendering
  * Controls: pause, resume, stepBack, stepForward
+ * Stale simulation detection (repeating generations or patterns in activity)
  * Current renderers:
    * Canvas: (Web), fullscreen support
    * StageXL: (Web), WebGL, fullscreen support, (performance issues with big scenes)
@@ -45,7 +46,6 @@ transformers:
  * Add multiple states to 'Majority Vote'
  * Add a multiple states generator
  * Add more tests
- * Detect stale simulations for reset / next
  * Playlist of simulations
  * Transitions for switching between two simulations
  * Multiple simulations/rule-sets running in a single scene

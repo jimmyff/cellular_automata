@@ -1,5 +1,11 @@
 # Changelog
 
+
+## 0.6
+
+- Stable simulation detection (repeating identical generations or repeating generation activeCellCount patterns)
+- Demos updated to auto reset on stable scene (excluding rendering examples)
+
 ## 0.5
 
 - Added new default renderer for web: CanvasRenderer (StageXL had performance issues with large scenes)
