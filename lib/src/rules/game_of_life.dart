@@ -1,3 +1,6 @@
+/// Implementation of *Conway's Game of Life*
+library cellular_automata.rules.game_of_life;
+
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/util/array_2d.dart';
@@ -10,7 +13,6 @@ enum GameOfLifeStates {
   ALIVE_BORN
 }
 
-/// Implementation of *Conway's Game of Life*
 class GameOfLife extends CARules {
   // transforms the complex state in to simple alive/dead for computation
   final Map<GameOfLifeStates, int> stateValue = {

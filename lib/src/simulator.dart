@@ -1,12 +1,15 @@
+/// Simulation management class
 library cellular_automata.simulator;
 
 import 'dart:core';
 import 'dart:async';
+import 'package:logging/logging.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
 export 'package:cellular_automata/src/util/timer.dart';
 
-/// Simulation management class
+final _log = new Logger('cellular_automata.simulator');
+
 class Simulator {
   final CellWorld _world;
   Stream<int> _timer;
@@ -20,6 +23,7 @@ class Simulator {
 
   int _lastGenerationTime;
   int _stableCounter = 0; // counts the number of reported stable worlds
+  int _maxAge; // if make age is set then onStable called when this age is met
 
   final Map _palette;
 
@@ -35,9 +39,11 @@ class Simulator {
       {CellWorld world,
       Duration generationDuration,
       CAGenerator generator,
-      Map palette})
+      Map palette,
+      maxAge})
       : _world = world,
         _palette = palette,
+        _maxAge = maxAge,
         _generationDuration = generationDuration {
     // apply a generator if specified
     if (generator != null) {
@@ -102,12 +108,17 @@ class Simulator {
     if (generationCounter %
             (2000 / _generationDuration.inMilliseconds).round() ==
         0)
-      print('Gen: $generationCounter | '
+      _log.info('Gen: $generationCounter | '
           'Activity: ${_world.activePercent}% | '
           'FPS: $fps/${(1000/_timerDuration.inMilliseconds).round()}');
 
     // check if stable...
     if (generationCounter % 20 == 0) {
+      if (_maxAge != null && _maxAge < _world.generation().count) {
+        _log.info('Max age reached...');
+        _onStable.add(true);
+        return;
+      }
       if (_world.isStable) {
         _stableCounter++;
 
@@ -117,7 +128,7 @@ class Simulator {
             (activityPercent < 10 && _stableCounter > 3) ||
             (_stableCounter > 5)) _onStable.add(true);
 
-        print(
+        _log.info(
             'Stable scene counter: x$_stableCounter World activity: $activityPercent%');
       } else
         _stableCounter = 0;

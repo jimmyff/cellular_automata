@@ -1,3 +1,4 @@
+/// A generation snapshot, contains states and activity details for processing
 library cellular_automata.generation;
 
 import 'package:cellular_automata/src/util/array_2d.dart';

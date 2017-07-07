@@ -1,10 +1,14 @@
+/// Stores the world state
 library cellular_automata.cell_world;
+
+import 'package:logging/logging.dart';
+import 'package:collection/collection.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/util/array_2d.dart';
-import 'package:collection/collection.dart';
 
-/// Stores the world state
+final _log = new Logger('cellular_automata.cell_world');
+
 class CellWorld<T> {
   final List<Generation<T>> _generations = [];
 
@@ -43,7 +47,7 @@ class CellWorld<T> {
             break;
           }
         if (stable) {
-          print('Stable scene detected! Repeating pattern $i');
+          _log.info('Stable scene detected! Repeating pattern $i');
           return true;
         }
       }
@@ -65,6 +69,9 @@ class CellWorld<T> {
 
   int _wrap(int v, int min, int max) =>
       min != null && v < min ? v + max : (v >= max ? v - max : v);
+
+  int wrapX(int x) => _wrap(x, 0, width);
+  int wrapY(int y) => _wrap(y, 0, height);
 
   /// returns the state of a cell
   T getState(int x, int y, [int generationsAgo = 0]) {
@@ -171,7 +178,6 @@ class CellWorld<T> {
       List<T> activeStates, Array2d grid,
       [List<T> processStates]) {
 //    final List<T> l = grid.toList(growable: false);
-    final s = new List<bool>.filled(grid.length, false, growable: false);
     final o = new Array2d<bool>(grid.width, grid.height, false);
 
     for (int y = 0; y < height; y++)

@@ -1,6 +1,13 @@
+library cellular_automata.generators.mathematical;
+
 import 'dart:math' as math;
+
+import 'package:logging/logging.dart';
+
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/util/array_2d.dart';
+
+final _log = new Logger('cellular_automata.generators.mathematical');
 
 // Numerous of these generators were ported, original Author: @protolambda
 // https://github.com/protolambda/automata/blob/master/src/lib.js
@@ -88,6 +95,6 @@ class MathematicalGenerator<T> extends CAGenerator {
     _type ??= MathematicalGenerators.values[
         new math.Random().nextInt(MathematicalGenerators.values.length)];
 
-    print('Generator: ${_type.toString()}');
+    _log.fine('Generator: ${_type.toString()}');
   }
 }

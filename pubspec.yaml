@@ -1,6 +1,6 @@
 name: cellular_automata
 description: A cellular automata library & playground
-version: 0.6.0
+version: 0.7.0
 homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
@@ -10,6 +10,7 @@ environment:
 dependencies:
   collection: '^1.14.1'
   stagexl: '^1.2.0+3'
+  logging: '^0.11.3+1'
   #  vector_math: "^2.0.4"
 
 dev_dependencies:

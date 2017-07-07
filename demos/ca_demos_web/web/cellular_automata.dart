@@ -4,6 +4,7 @@
 import 'dart:html';
 import 'dart:async';
 
+import 'package:logging/logging.dart';
 import 'package:params/client.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
@@ -197,6 +198,12 @@ Simulator _initSimulation([dynamic _]) {
 }
 
 Future<Null> main() async {
+  // configure the logger
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((LogRecord rec) {
+    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+  });
+
   // load the request parameters
   await initParams();
   Simulator sim;

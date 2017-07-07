@@ -1,8 +1,12 @@
 import 'dart:html';
 import 'package:stagexl/stagexl.dart';
 
+import 'package:logging/logging.dart';
+
 import 'package:cellular_automata/src/util/array_2d.dart';
 import 'package:cellular_automata/src/renderers/_ca_renderer.dart';
+
+final _log = new Logger('cellular_automata.renderers.stage_xl');
 
 enum StageXLDisplayMode { FULLSCREEN, FIXED }
 
@@ -25,7 +29,7 @@ class StageXLRenderer extends CARenderer {
       num stageWidth: 256,
       num stageHeight: 256,
       List<int> palette}) {
-    print('Stage XL: ${_width}x$_height (${stageWidth}x${stageHeight}px)');
+    _log.fine('Stage XL: ${_width}x$_height (${stageWidth}x${stageHeight}px)');
 
     final cellWidth = (stageWidth / _width).round();
     final cellHeight = (stageHeight / _height).round();
