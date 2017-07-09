@@ -21,15 +21,15 @@ Player createSimulation({
   num speedMs,
   CanvasDisplayMode displayMode,
   CanvasElement canvas,
-  CellWorld world,
+  Simulator sim,
   Map palette,
   CAGenerator generator,
 }) {
   print('Cellular Automata Demo');
 
   final player = new Player(
-      world: world,
-      generationDuration: new Duration(milliseconds: speedMs),
+      simulator: sim,
+      frameDuration: new Duration(milliseconds: speedMs),
       palette: palette,
       generator: generator,
       maxDuration: new Duration(seconds: 60));
@@ -61,7 +61,7 @@ Player _initSimulation([dynamic _]) {
   num stageHeight;
 
   CARules rules;
-  CellWorld world;
+  Simulator world;
   Map palette;
   CAGenerator generator;
 
@@ -109,11 +109,12 @@ Player _initSimulation([dynamic _]) {
 
   switch (params['rules' ?? 'game_of_life']) {
     case 'game_of_life':
-      world = new CellWorld<GameOfLifeStates>(
+      world = new Simulator<GameOfLifeStates>(
           rules: new GameOfLife(),
           width: worldWidth,
           height: worldHeight,
-          defaultState: GameOfLifeStates.DEAD);
+          defaultState: GameOfLifeStates.DEAD,
+          wrap: true);
 
       palette = new Map<GameOfLifeStates, String>.from({
         GameOfLifeStates.DEAD: '#0000FF',
@@ -130,11 +131,12 @@ Player _initSimulation([dynamic _]) {
       break;
 
     case 'game_of_life_simple':
-      world = new CellWorld<bool>(
+      world = new Simulator<bool>(
           rules: new GameOfLifeSimple(),
           width: worldWidth,
           height: worldHeight,
-          defaultState: false);
+          defaultState: false,
+          wrap: true);
 
       palette = new Map<bool, String>.from({
         false: '#8B0000',
@@ -146,11 +148,12 @@ Player _initSimulation([dynamic _]) {
       break;
 
     case 'brians_brain':
-      world = new CellWorld<BriansBrainStates>(
+      world = new Simulator<BriansBrainStates>(
           rules: new BriansBrain(),
           width: worldWidth,
           height: worldHeight,
-          defaultState: BriansBrainStates.OFF);
+          defaultState: BriansBrainStates.OFF,
+          wrap: true);
 
       palette = new Map<BriansBrainStates, String>.from({
         BriansBrainStates.OFF: '#556B2F',
@@ -166,11 +169,12 @@ Player _initSimulation([dynamic _]) {
 
     case 'mcell_generations':
       String rules_config = params['rules_config'];
-      world = new CellWorld<int>(
+      world = new Simulator<int>(
           rules: new MCellGenerations.fromConfigString(rules_config),
           width: worldWidth,
           height: worldHeight,
-          defaultState: 0);
+          defaultState: 0,
+          wrap: true);
 
       palette = new Map<int, String>.from({
         0: '#000000',
@@ -186,11 +190,12 @@ Player _initSimulation([dynamic _]) {
       break;
 
     case 'majority_vote':
-      world = new CellWorld<int>(
+      world = new Simulator<int>(
           rules: new MajorityVote(),
           width: worldWidth,
           height: worldHeight,
-          defaultState: 0);
+          defaultState: 0,
+          wrap: true);
 
       palette = new Map<int, String>.from({
         0: '#000000',
@@ -211,7 +216,7 @@ Player _initSimulation([dynamic _]) {
       stageHeight: stageHeight,
       stageWidth: stageWidth,
       generator: generator,
-      world: world,
+      sim: world,
       palette: palette,
       displayMode: displayMode,
       speedMs: speedMs,
@@ -235,7 +240,7 @@ Future<Null> main() async {
     ca = _initSimulation();
 
     // render loop (wire the simulation & renderer together)
-    ca.onComplete.listen((PlayerCompleteReason c) {
+    ca.onComplete.listen((SimulationCompleteReason c) {
       print('Sim complete: $c');
       ca.stop();
       startNewSim();

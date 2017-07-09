@@ -10,16 +10,16 @@ export 'package:cellular_automata/src/util/timer.dart';
 
 final _log = new Logger('cellular_automata.player');
 
-enum PlayerCompleteReason { stable, duration }
+enum SimulationCompleteReason { stable, duration }
 
 class Player {
-  final CellWorld _world;
+  final Simulator _sim;
   Stream<int> _timer;
   StreamSubscription<int> _timerSubscription;
   Duration _timerDuration;
-  final Duration _generationDuration;
+  final Duration _frameDuration;
 
-  int get generationCounter => _world.generationCounter;
+  int get generationCounter => _sim.generationCounter;
   get fps => _fps.round();
   num _fps = 0;
 
@@ -34,38 +34,37 @@ class Player {
   Stream<CellGrid> get onRender => _onRender.stream;
 
   // complete stream
-  final StreamController<PlayerCompleteReason> _onComplete =
-      new StreamController<PlayerCompleteReason>();
-  Stream<PlayerCompleteReason> get onComplete => _onComplete.stream;
+  final StreamController<SimulationCompleteReason> _onComplete =
+      new StreamController<SimulationCompleteReason>();
+  Stream<SimulationCompleteReason> get onComplete => _onComplete.stream;
 
   Player(
-      {CellWorld world,
-      Duration generationDuration,
+      {Simulator simulator,
+      Duration frameDuration,
       CAGenerator generator,
       Map palette,
       int maxAge,
       Duration maxDuration})
-      : _world = world,
+      : _sim = simulator,
         _palette = palette,
         _maxAge = maxAge != null
             ? maxAge
             : (maxDuration != null
-                ? (maxDuration.inMilliseconds /
-                        generationDuration.inMilliseconds)
+                ? (maxDuration.inMilliseconds / frameDuration.inMilliseconds)
                     .floor()
                 : null),
-        _generationDuration = generationDuration {
+        _frameDuration = frameDuration {
     _log.fine('Max Age: $_maxAge');
 
     // apply a generator if specified
     if (generator != null) {
-      world.applyGenerator(generator);
+      simulator.applyGenerator(generator);
       _callRender();
     }
   }
 
   void start({Duration delay}) {
-    initTimer(_generationDuration, delay);
+    initTimer(_frameDuration, delay);
   }
 
   void resume() =>
@@ -84,13 +83,13 @@ class Player {
 
   void stepBack() {
     if (!_timerSubscription.isPaused) _timerSubscription.pause();
-    _world.stepBack();
+    _sim.rewind();
     _callRender(changesOnly: false);
   }
 
   void _callRender({bool changesOnly: true}) {
     _onRender
-        .add(_world.applyPalette(palette: _palette, changesOnly: changesOnly));
+        .add(_sim.applyPalette(palette: _palette, changesOnly: changesOnly));
   }
 
   void _calculateAverageFps() {
@@ -112,31 +111,30 @@ class Player {
   }
 
   void _tick() {
-    _world.applyRules();
+    _sim.applyRules();
     _callRender();
     _calculateAverageFps();
 
     // log to console statistics
-    if (generationCounter %
-            (2000 / _generationDuration.inMilliseconds).round() ==
-        0)
+    if (generationCounter % (2000 / _frameDuration.inMilliseconds).round() == 0)
       _log.info('Gen: $generationCounter | '
-          'Activity: ${_world.activePercent}% | '
+          'Activity: ${_sim.activePercent}% | '
           'FPS: $fps/${(1000/_timerDuration.inMilliseconds).round()}');
 
     // check if scene is complete / stable...
     if (generationCounter % 20 == 0) {
-      if (_maxAge != null && _maxAge < _world.generation().count)
-        return _onComplete.add(PlayerCompleteReason.duration);
+      if (_maxAge != null && _maxAge < _sim.generation().count)
+        return _onComplete.add(SimulationCompleteReason.duration);
 
-      if (_world.isStable) {
+      if (_sim.isStable) {
         _stableCounter++;
 
-        final int activityPercent = _world.activePercent;
+        final int activityPercent = _sim.activePercent;
         // based on percentage broadcast as stable
         if ((activityPercent < 5) ||
             (activityPercent < 10 && _stableCounter > 5) ||
-            (_stableCounter > 8)) _onComplete.add(PlayerCompleteReason.stable);
+            (_stableCounter > 8))
+          _onComplete.add(SimulationCompleteReason.stable);
 
         _log.info(
             'Stable scene counter: x$_stableCounter World activity: $activityPercent%');

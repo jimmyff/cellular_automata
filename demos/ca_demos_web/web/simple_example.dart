@@ -21,13 +21,14 @@ void main() {
     // Create the simulator object. This holds the world (the grid) and
     // the rules (the cellular automaton). It also controls the seeding & timing
     final player = new Player(
-        world: new CellWorld<GameOfLifeStates>(
+        simulator: new Simulator<GameOfLifeStates>(
           width: 64,
           height: 64,
           defaultState: GameOfLifeStates.DEAD,
+          wrap: true,
           rules: new GameOfLife(),
         ),
-        generationDuration: new Duration(milliseconds: 50),
+        frameDuration: const Duration(milliseconds: 50),
         palette: palette,
         generator: new MathematicalGenerator<GameOfLifeStates>(
             type: MathematicalGenerators.RANDOM,
@@ -56,7 +57,7 @@ void main() {
     ca = createSim();
     ca.start();
 
-    ca.onComplete.listen((PlayerCompleteReason s) {
+    ca.onComplete.listen((SimulationCompleteReason s) {
       ca.stop();
       startSim();
     });

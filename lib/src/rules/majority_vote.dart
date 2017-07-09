@@ -10,14 +10,11 @@ class MajorityVote extends CARules {
   CellGrid<bool> gridActivity(CellGrid grid) {
     final o = new CellGrid<bool>(grid.width, grid.height, false);
 
-    // TODO: specify somewhere
-    final wrap = true;
-
     // scan each cell in each row for a different neighbor to right
     // then mark these two cells as active and the 4 directly above and below
     for (int y = 0; y < grid.height; y++)
       for (int x = 0; x < grid.width; x++)
-        if (grid.get(x, y) != grid.get(x + 1, y, wrap, null))
+        if (grid.get(x, y) != grid.get(x + 1, y, wrap, defaultState))
           o
             ..set(x, y, true, wrap)
             ..set(x + 1, y - 1, true, wrap)
@@ -30,15 +27,12 @@ class MajorityVote extends CARules {
   }
 
   @override
-  int calculateState(int x, int y, CellWorld world) {
+  int calculateState(int x, int y, CellGrid grid) {
     // final int currentState = world.getState(x, y);
-
-    // TODO: specify somewhere
-    final wrap = true;
 
     // Distribution: {STATE, [COUNT, STATE]}
     final Map<int, List<int>> distribution = {};
-    world.generation().states.getNeighborhood(x, y, wrap, null)
+    grid.getNeighborhood(x, y, wrap, defaultState)
       ..forEach((int i) {
         if (distribution[i] == null)
           distribution[i] = [1, i];

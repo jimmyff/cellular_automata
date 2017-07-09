@@ -6,11 +6,13 @@
 - Credits
 - `onStable` renamed `onComplete`, now passes `SimulatorCompleteReason` enum value. Current states are: `duration` and `stable`
 - Demos updated to include MCell
+- Credits file created to credit those that wrote/discovered the rules
 - Decent Refactor, reorganised stuff! 
   - `Simulator` renamed `Player`
   - `Array2D` replaced with `CellGrid` which combines Array2D with CA specific functionality which simplifies `CellWorld`.
   - `CARules` interface updated
- 
+  - `CellWorld` renamed `Simulator`
+   
 
 ## 0.7
 

@@ -5,7 +5,7 @@ import 'package:logging/logging.dart';
 
 export 'package:cellular_automata/src/player.dart';
 export 'package:cellular_automata/src/generation.dart';
-export 'package:cellular_automata/src/cell_world.dart';
+export 'package:cellular_automata/src/simulator.dart';
 export 'package:cellular_automata/src/cell_grid.dart';
 export 'package:cellular_automata/src/rules/_ca_rules.dart';
 

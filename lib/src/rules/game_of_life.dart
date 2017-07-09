@@ -22,18 +22,16 @@ class GameOfLife extends CARules {
     GameOfLifeStates.DEAD_OVER_POPULATED: 0,
   };
 
-  // TODO: don't hardcode wrap
-
   @override
   CellGrid<bool> gridActivity(CellGrid grid) =>
       grid.activateStatesMooresNeighbors(
-          [GameOfLifeStates.ALIVE_BORN, GameOfLifeStates.ALIVE], true);
+          [GameOfLifeStates.ALIVE_BORN, GameOfLifeStates.ALIVE], wrap);
 
   @override
-  GameOfLifeStates calculateState(int x, int y, CellWorld world) {
-    final GameOfLifeStates currentState = world.generation().states.get(x, y);
+  GameOfLifeStates calculateState(int x, int y, CellGrid grid) {
+    final GameOfLifeStates currentState = grid.get(x, y);
     final List<GameOfLifeStates> neighborhood =
-        world.generation().states.getNeighborhood(x, y, world.wrap, null);
+        grid.getNeighborhood(x, y, wrap, defaultState);
 
     // calculate the sum of alive neighbors
     final sum =

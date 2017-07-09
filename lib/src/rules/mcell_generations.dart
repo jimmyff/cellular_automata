@@ -48,17 +48,16 @@ class MCellGenerations extends CARules {
   CellGrid<bool> gridActivity(CellGrid grid) =>
       grid.activateStatesMooresNeighbors(
           new List.generate(stateCount, (int idx) => idx + 1, growable: false),
-          true);
+          wrap);
 
   @override
-  int calculateState(int x, int y, CellWorld world) {
-    final int currentState = world.generation().states.get(x, y);
+  int calculateState(int x, int y, CellGrid grid) {
+    final int currentState = grid.get(x, y);
 
     // TODO: specify somewhere
     final wrap = true;
 
-    final List<int> neighborhood =
-        world.generation().states.getNeighborhood(x, y, wrap, null);
+    final List<int> neighborhood = grid.getNeighborhood(x, y, wrap, null);
 
     // calculate the sum of alive neighbors (0 = off)
     final sum = neighborhood.fold(0, (a, b) => a + (b == 1 ? 1 : 0));

@@ -14,21 +14,16 @@ class BriansBrain extends CARules {
     BriansBrainStates.DYING: 0,
   };
 
-  // TOOD: wrap shouldn't be hardcoded.
-
   @override
   CellGrid<bool> gridActivity(CellGrid grid) =>
       grid.activateStatesMooresNeighbors(
-          [BriansBrainStates.ON], true, [BriansBrainStates.DYING]);
+          [BriansBrainStates.ON], wrap, [BriansBrainStates.DYING]);
 
   @override
-  BriansBrainStates calculateState(int x, int y, CellWorld world) {
-    // TODO: wrap
-    final wrap = true;
-
-    final BriansBrainStates currentState = world.generation().states.get(x, y);
+  BriansBrainStates calculateState(int x, int y, CellGrid grid) {
+    final BriansBrainStates currentState = grid.get(x, y);
     final List<BriansBrainStates> neighborhood =
-        world.generation().states.getNeighborhood(x, y, world.wrap, null);
+        grid.getNeighborhood(x, y, wrap, defaultState);
 
     switch (currentState) {
       case BriansBrainStates.ON:

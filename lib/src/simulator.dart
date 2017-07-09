@@ -1,17 +1,16 @@
-/// Stores the world state
-library cellular_automata.cell_world;
+/// Has a history of generations, process the rules & generators,
+/// checks for stability (repeating patterns of activity)
+library cellular_automata.simulator;
 
 import 'package:logging/logging.dart';
 import 'package:collection/collection.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
 
-final _log = new Logger('cellular_automata.cell_world');
+final _log = new Logger('cellular_automata.simulator');
 
-class CellWorld<T> {
+class Simulator<T> {
   final List<Generation<T>> _generations = [];
-
-  bool wrap = true;
 
   final _generationHistoryLength = 62;
 
@@ -20,10 +19,14 @@ class CellWorld<T> {
 
   int get generationCounter => _generations.isEmpty ? 0 : generation(0).count;
 
-  final T defaultState;
   final int width;
   final int height;
   CARules rules;
+
+  Simulator({this.width, this.height, this.rules, defaultState, wrap: true}) {
+    assert(rules != null);
+    rules.setup(wrap: wrap, defaultState: defaultState);
+  }
 
   /// Checks to see if recent generations are identical or repeating
   bool get isStable {
@@ -66,9 +69,7 @@ class CellWorld<T> {
     return _generations[_generations.length - 1 - ago];
   }
 
-  CellWorld({this.width, this.height, this.defaultState, this.rules});
-
-  /// apply a palette to the world state
+  /// apply a palette to the current state
   CellGrid<T> applyPalette<T>({
     Map palette,
     bool changesOnly,
@@ -82,55 +83,59 @@ class CellWorld<T> {
 
     for (num x = 0; x < width; x++) {
       for (num y = 0; y < height; y++) {
-        final state = generation().states.get(x, y, wrap, defaultState);
+        final state =
+            generation().states.get(x, y, rules.wrap, rules.defaultState);
 
         // only send changes (if generation not the first generation)
         if (_generations.length > 1 &&
             changesOnly &&
-            state == generation(1).states.get(x, y, wrap, defaultState))
+            state ==
+                generation(1).states.get(x, y, rules.wrap, rules.defaultState))
           continue;
 
-        output.set(x, y, palette[state], wrap);
+        output.set(x, y, palette[state], rules.wrap);
       }
     }
     return output;
   }
 
-  void stepBack() {
+  void rewind() {
     if (_generations.length > 1) _generations.removeLast();
   }
 
+  // Creates a new generation
   void newGeneration(CellGrid<T> newStateArray) =>
       saveGeneration(new Generation<T>((generation()?.count ?? 0) + 1, width,
           height, newStateArray, rules.gridActivity(newStateArray)));
 
-  /// Saves the generation
+  /// Saves the new generation
   void saveGeneration(Generation<T> generation) {
     _generations.add(generation);
     if (_generations.length > _generationHistoryLength)
       _generations.removeRange(0, 1);
   }
 
-  /// Apply CA Rules on a new generation
+  /// Apply CA Rules and create a new generation
   void applyRules([CARules alternativeRules]) {
     final newStateArray = new CellGrid<T>(width, height);
-
-//    final whatToProcess = rules.whatToProcess(generation(), this);
 
     for (var x = 0; x < width; x++)
       for (var y = 0; y < height; y++)
         if (generation().activity.get(x, y)) {
-          newStateArray.set(x, y,
-              (alternativeRules ?? rules).calculateState(x, y, this), wrap);
-        } else
           newStateArray.set(
-              x, y, generation().states.get(x, y, wrap, null), wrap);
+              x,
+              y,
+              (alternativeRules ?? rules)
+                  .calculateState(x, y, generation().states),
+              rules.wrap);
+        } else
+          newStateArray.set(x, y,
+              generation().states.get(x, y, rules.wrap, null), rules.wrap);
 
     newGeneration(newStateArray);
-//    print (generation().states);
   }
 
-  /// Apply a generator on a new generation
+  /// Apply a generator and create a new generation
   void applyGenerator(CAGenerator generator) {
     newGeneration(generator.generate(width, height));
   }
