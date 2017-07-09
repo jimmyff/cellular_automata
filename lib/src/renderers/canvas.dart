@@ -2,7 +2,7 @@ import 'dart:html';
 
 import 'package:logging/logging.dart';
 
-import 'package:cellular_automata/src/util/array_2d.dart';
+import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/renderers/_ca_renderer.dart';
 
 final _log = new Logger('cellular_automata.renderers.canvas');
@@ -68,7 +68,7 @@ class CanvasRenderer extends CARenderer {
   }
 
   @override
-  void render(Array2d<int> renderData) {
+  void render(CellGrid<int> renderData) {
     for (num x = 0; x < renderData.width; x++)
       for (num y = 0; y < renderData.height; y++) {
         final color = renderData.get(x, y);

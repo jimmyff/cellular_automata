@@ -3,7 +3,6 @@ library cellular_automata.rules.brains_brain;
 
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/src/util/array_2d.dart';
 
 enum BriansBrainStates { OFF, ON, DYING }
 
@@ -15,15 +14,21 @@ class BriansBrain extends CARules {
     BriansBrainStates.DYING: 0,
   };
 
+  // TOOD: wrap shouldn't be hardcoded.
+
   @override
-  Array2d<bool> whatToProcess(Array2d grid, CellWorld world) =>
-      world.activateStatesMooresNeighbors(
-          [BriansBrainStates.ON], grid, [BriansBrainStates.DYING]);
+  CellGrid<bool> gridActivity(CellGrid grid) =>
+      grid.activateStatesMooresNeighbors(
+          [BriansBrainStates.ON], true, [BriansBrainStates.DYING]);
 
   @override
   BriansBrainStates calculateState(int x, int y, CellWorld world) {
-    final BriansBrainStates currentState = world.getState(x, y);
-    final List<BriansBrainStates> neighborhood = world.getNeighborhood(x, y);
+    // TODO: wrap
+    final wrap = true;
+
+    final BriansBrainStates currentState = world.generation().states.get(x, y);
+    final List<BriansBrainStates> neighborhood =
+        world.generation().states.getNeighborhood(x, y, world.wrap, null);
 
     switch (currentState) {
       case BriansBrainStates.ON:

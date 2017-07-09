@@ -7,21 +7,24 @@ import 'dart:math' as math;
 
 class MajorityVote extends CARules {
   @override
-  Array2d<bool> whatToProcess(Array2d grid, CellWorld world) {
-    final o = new Array2d<bool>(grid.width, grid.height, false);
+  CellGrid<bool> gridActivity(CellGrid grid) {
+    final o = new CellGrid<bool>(grid.width, grid.height, false);
+
+    // TODO: specify somewhere
+    final wrap = true;
 
     // scan each cell in each row for a different neighbor to right
     // then mark these two cells as active and the 4 directly above and below
     for (int y = 0; y < grid.height; y++)
       for (int x = 0; x < grid.width; x++)
-        if (grid.get(x, y) != grid.get(world.wrapX(x + 1), y))
+        if (grid.get(x, y) != grid.get(x + 1, y, wrap, null))
           o
-            ..set(world.wrapX(x), world.wrapY(y - 1), true)
-            ..set(world.wrapX(x + 1), world.wrapY(y - 1), true)
-            ..set(world.wrapX(x), world.wrapY(y), true)
-            ..set(world.wrapX(x + 1), world.wrapY(y), true)
-            ..set(world.wrapX(x), world.wrapY(y + 1), true)
-            ..set(world.wrapX(x + 1), world.wrapY(y + 1), true);
+            ..set(x, y, true, wrap)
+            ..set(x + 1, y - 1, true, wrap)
+            ..set(x, y, true, wrap)
+            ..set(x + 1, y, true, wrap)
+            ..set(x, y + 1, true, wrap)
+            ..set(x + 1, y + 1, true, wrap);
 
     return o;
   }
@@ -30,9 +33,12 @@ class MajorityVote extends CARules {
   int calculateState(int x, int y, CellWorld world) {
     // final int currentState = world.getState(x, y);
 
+    // TODO: specify somewhere
+    final wrap = true;
+
     // Distribution: {STATE, [COUNT, STATE]}
     final Map<int, List<int>> distribution = {};
-    world.getNeighborhood(x, y)
+    world.generation().states.getNeighborhood(x, y, wrap, null)
       ..forEach((int i) {
         if (distribution[i] == null)
           distribution[i] = [1, i];

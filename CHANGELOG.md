@@ -6,6 +6,11 @@
 - Credits
 - `onStable` renamed `onComplete`, now passes `SimulatorCompleteReason` enum value. Current states are: `duration` and `stable`
 - Demos updated to include MCell
+- Decent Refactor, reorganised stuff! 
+  - `Simulator` renamed `Player`
+  - `Array2D` replaced with `CellGrid` which combines Array2D with CA specific functionality which simplifies `CellWorld`.
+  - `CARules` interface updated
+ 
 
 ## 0.7
 
@@ -48,7 +53,7 @@
 
 - Refactored so Rule's cell-states are now passed as generic types in to the Cell World for better analyzer & tooling support
 - Added a `CAGenerators` for generating/seeding worlds
-- Renderers are now further decoupled from the Simulation. They now just require an array2d containing states expressed in a palette.
+- Renderers are now further decoupled from the Simulation. They now just require an CellGrid containing states expressed in a palette.
 - Added a very simple demo (simple_example.dart) to show minimum setup code
 - `CellWorld` now stores full cell-states and Rules also deal with full cell-states which makes code more readable
 - Fixed mathematical generators

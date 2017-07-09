@@ -13,7 +13,7 @@ import 'package:cellular_automata/rules.dart';
 import 'package:cellular_automata/rules_mcell.dart';
 
 // Fully featured example of using cellular_automata
-Simulator createSimulation({
+Player createSimulation({
   num worldWidth,
   num worldHeight,
   num stageWidth,
@@ -27,7 +27,7 @@ Simulator createSimulation({
 }) {
   print('Cellular Automata Demo');
 
-  final sim = new Simulator(
+  final player = new Player(
       world: world,
       generationDuration: new Duration(milliseconds: speedMs),
       palette: palette,
@@ -43,16 +43,16 @@ Simulator createSimulation({
     );
 
   // render loop (wire the simulation & renderer together)
-  sim.onRender.listen((Array2d renderData) {
+  player.onRender.listen((CellGrid renderData) {
     // render the cell world state
     renderer.render(renderData);
   });
 
-  return sim;
+  return player;
 }
 
 // Process the input parameteres
-Simulator _initSimulation([dynamic _]) {
+Player _initSimulation([dynamic _]) {
   num worldWidth = params['width'] != null ? int.parse(params['width']) : null;
   num worldHeight =
       params['height'] != null ? int.parse(params['height']) : null;
@@ -229,18 +229,18 @@ Future<Null> main() async {
 
   // load the request parameters
   await initParams();
-  Simulator sim;
+  Player ca;
 
   void startNewSim() {
-    sim = _initSimulation();
+    ca = _initSimulation();
 
     // render loop (wire the simulation & renderer together)
-    sim.onComplete.listen((SimulatorCompleteReason c) {
+    ca.onComplete.listen((PlayerCompleteReason c) {
       print('Sim complete: $c');
-      sim.stop();
+      ca.stop();
       startNewSim();
     });
-    sim.start(delay: new Duration(milliseconds: 100));
+    ca.start(delay: new Duration(milliseconds: 100));
   }
 
   startNewSim();

@@ -1,5 +1,5 @@
-/// Simulation management class
-library cellular_automata.simulator;
+/// This manages the running and timing of Cellular Automata rules
+library cellular_automata.player;
 
 import 'dart:core';
 import 'dart:async';
@@ -8,11 +8,11 @@ import 'package:logging/logging.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 export 'package:cellular_automata/src/util/timer.dart';
 
-final _log = new Logger('cellular_automata.simulator');
+final _log = new Logger('cellular_automata.player');
 
-enum SimulatorCompleteReason { stable, duration }
+enum PlayerCompleteReason { stable, duration }
 
-class Simulator {
+class Player {
   final CellWorld _world;
   Stream<int> _timer;
   StreamSubscription<int> _timerSubscription;
@@ -30,15 +30,15 @@ class Simulator {
   final Map _palette;
 
   // render loop
-  final StreamController<Array2d> _onRender = new StreamController<Array2d>();
-  Stream<Array2d> get onRender => _onRender.stream;
+  final StreamController<CellGrid> _onRender = new StreamController<CellGrid>();
+  Stream<CellGrid> get onRender => _onRender.stream;
 
   // complete stream
-  final StreamController<SimulatorCompleteReason> _onComplete =
-      new StreamController<SimulatorCompleteReason>();
-  Stream<SimulatorCompleteReason> get onComplete => _onComplete.stream;
+  final StreamController<PlayerCompleteReason> _onComplete =
+      new StreamController<PlayerCompleteReason>();
+  Stream<PlayerCompleteReason> get onComplete => _onComplete.stream;
 
-  Simulator(
+  Player(
       {CellWorld world,
       Duration generationDuration,
       CAGenerator generator,
@@ -127,7 +127,7 @@ class Simulator {
     // check if scene is complete / stable...
     if (generationCounter % 20 == 0) {
       if (_maxAge != null && _maxAge < _world.generation().count)
-        return _onComplete.add(SimulatorCompleteReason.duration);
+        return _onComplete.add(PlayerCompleteReason.duration);
 
       if (_world.isStable) {
         _stableCounter++;
@@ -136,8 +136,7 @@ class Simulator {
         // based on percentage broadcast as stable
         if ((activityPercent < 5) ||
             (activityPercent < 10 && _stableCounter > 5) ||
-            (_stableCounter > 8))
-          _onComplete.add(SimulatorCompleteReason.stable);
+            (_stableCounter > 8)) _onComplete.add(PlayerCompleteReason.stable);
 
         _log.info(
             'Stable scene counter: x$_stableCounter World activity: $activityPercent%');

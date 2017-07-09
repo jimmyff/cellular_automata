@@ -19,7 +19,7 @@ void main() {
 
   // Create the simulator object. This holds the world (the grid) and
   // the rules (the cellular automaton). It also controls the seeding & timing
-  final sim = new Simulator(
+  final sim = new Player(
       world: new CellWorld<GameOfLifeStates>(
           rules: new GameOfLife(),
           width: 64,
@@ -41,7 +41,7 @@ void main() {
     );
 
   // render loop (wire the simulation & renderer together)
-  sim.onRender.listen((Array2d renderData) {
+  sim.onRender.listen((CellGrid renderData) {
     // render the cell world state
     renderer.render(renderData);
   });

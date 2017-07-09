@@ -3,17 +3,20 @@ library cellular_automata.rules.game_of_life_simple;
 
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/src/util/array_2d.dart';
+
+// TODO: don't hardcode wrap
 
 class GameOfLifeSimple extends CARules {
   @override
-  Array2d<bool> whatToProcess(Array2d grid, CellWorld world) =>
-      world.activateStatesMooresNeighbors([true], grid);
+  CellGrid<bool> gridActivity(CellGrid grid) =>
+      grid.activateStatesMooresNeighbors([true], true);
 
   @override
   bool calculateState(int x, int y, CellWorld world) {
-    final bool state = world.getState(x, y);
-    final List<bool> neighborhood = world.getNeighborhood(x, y);
+    final bool state = world.generation().states.get(x, y);
+    final List<bool> neighborhood =
+        world.generation().states.getNeighborhood(x, y, world.wrap, false);
+
     final sum = neighborhood.fold(0, (a, bool b) => a + (b ? 1 : 0));
 
     if (state && sum < 2)

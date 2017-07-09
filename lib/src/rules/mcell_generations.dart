@@ -3,7 +3,6 @@ library cellular_automata.rules.mcell.generations;
 
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/src/util/array_2d.dart';
 
 //enum MCellGenerationsRuleOptions {
 //  starWars,
@@ -43,17 +42,23 @@ class MCellGenerations extends CARules {
     );
   }
 
+// TODO: don't hardcode wrap
+
   @override
-  Array2d<bool> whatToProcess(Array2d grid, CellWorld world) =>
-      world.activateStatesMooresNeighbors(
+  CellGrid<bool> gridActivity(CellGrid grid) =>
+      grid.activateStatesMooresNeighbors(
           new List.generate(stateCount, (int idx) => idx + 1, growable: false),
-          grid);
+          true);
 
   @override
   int calculateState(int x, int y, CellWorld world) {
-    final int currentState = world.getState(x, y);
+    final int currentState = world.generation().states.get(x, y);
 
-    final List<int> neighborhood = world.getNeighborhood(x, y);
+    // TODO: specify somewhere
+    final wrap = true;
+
+    final List<int> neighborhood =
+        world.generation().states.getNeighborhood(x, y, wrap, null);
 
     // calculate the sum of alive neighbors (0 = off)
     final sum = neighborhood.fold(0, (a, b) => a + (b == 1 ? 1 : 0));

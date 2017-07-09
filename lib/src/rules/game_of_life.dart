@@ -3,7 +3,6 @@ library cellular_automata.rules.game_of_life;
 
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/src/util/array_2d.dart';
 
 enum GameOfLifeStates {
   DEAD,
@@ -23,15 +22,18 @@ class GameOfLife extends CARules {
     GameOfLifeStates.DEAD_OVER_POPULATED: 0,
   };
 
+  // TODO: don't hardcode wrap
+
   @override
-  Array2d<bool> whatToProcess(Array2d grid, CellWorld world) =>
-      world.activateStatesMooresNeighbors(
-          [GameOfLifeStates.ALIVE_BORN, GameOfLifeStates.ALIVE], grid);
+  CellGrid<bool> gridActivity(CellGrid grid) =>
+      grid.activateStatesMooresNeighbors(
+          [GameOfLifeStates.ALIVE_BORN, GameOfLifeStates.ALIVE], true);
 
   @override
   GameOfLifeStates calculateState(int x, int y, CellWorld world) {
-    final GameOfLifeStates currentState = world.getState(x, y);
-    final List<GameOfLifeStates> neighborhood = world.getNeighborhood(x, y);
+    final GameOfLifeStates currentState = world.generation().states.get(x, y);
+    final List<GameOfLifeStates> neighborhood =
+        world.generation().states.getNeighborhood(x, y, world.wrap, null);
 
     // calculate the sum of alive neighbors
     final sum =

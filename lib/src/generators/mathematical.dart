@@ -5,7 +5,6 @@ import 'dart:math' as math;
 import 'package:logging/logging.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/src/util/array_2d.dart';
 
 final _log = new Logger('cellular_automata.generators.mathematical');
 
@@ -65,8 +64,8 @@ class MathematicalGenerator<T> extends CAGenerator {
 
   /// generate the grid
   @override
-  Array2d<T> generate(int width, int height) {
-    final out = new Array2d<T>(width, height);
+  CellGrid<T> generate(int width, int height) {
+    final out = new CellGrid<T>(width, height);
 
     // position 0,0 in the centre
     final offsetX = -(width / 2).round();
@@ -79,7 +78,8 @@ class MathematicalGenerator<T> extends CAGenerator {
             y,
             generators[_type](x + offsetX, (y + offsetY) * -1)
                 ? valueTrue
-                : valueFalse);
+                : valueFalse,
+            true);
 
     return out;
   }

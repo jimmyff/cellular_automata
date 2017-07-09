@@ -3,7 +3,7 @@ import 'package:stagexl/stagexl.dart';
 
 import 'package:logging/logging.dart';
 
-import 'package:cellular_automata/src/util/array_2d.dart';
+import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/renderers/_ca_renderer.dart';
 
 final _log = new Logger('cellular_automata.renderers.stage_xl');
@@ -16,7 +16,7 @@ class StageXLRenderer extends CARenderer {
   int _height;
 
   final _paletteMap = <int, BitmapData>{};
-  Array2d<Bitmap> _bitmapGrid;
+  CellGrid<Bitmap> _bitmapGrid;
 
   StageXLRenderer({int width, int height})
       : _width = width ?? 128,
@@ -55,7 +55,7 @@ class StageXLRenderer extends CARenderer {
 
     // setup the bitmap texture...
     final container = new BitmapContainer();
-    _bitmapGrid = new Array2d<Bitmap>(_width, _height, null);
+    _bitmapGrid = new CellGrid<Bitmap>(_width, _height, null);
     for (num x = 0; x < _bitmapGrid.width; x++) {
       for (num y = 0; y < _bitmapGrid.height; y++) {
         final bitmap = new Bitmap()
@@ -63,7 +63,7 @@ class StageXLRenderer extends CARenderer {
           ..y = y * cellHeight
           ..bitmapData = null;
         container.addChild(bitmap);
-        _bitmapGrid.set(x, y, bitmap);
+        _bitmapGrid.set(x, y, bitmap, false);
       }
     }
     _stage.addChild(container);
@@ -91,7 +91,7 @@ class StageXLRenderer extends CARenderer {
   }
 
   @override
-  void render(Array2d<int> renderData) {
+  void render(CellGrid<int> renderData) {
     for (num x = 0; x < renderData.width; x++)
       for (num y = 0; y < renderData.height; y++) {
         final color = renderData.get(x, y);

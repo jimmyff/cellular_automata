@@ -8,7 +8,7 @@ import 'package:cellular_automata/rules.dart';
 
 // Simple example of using cellular_automata
 void main() {
-  Simulator createSim() {
+  Player createSim() {
     // configure the palette
     final palette = new Map<GameOfLifeStates, String>.from({
       GameOfLifeStates.DEAD: '#000',
@@ -20,7 +20,7 @@ void main() {
 
     // Create the simulator object. This holds the world (the grid) and
     // the rules (the cellular automaton). It also controls the seeding & timing
-    final sim = new Simulator(
+    final player = new Player(
         world: new CellWorld<GameOfLifeStates>(
           width: 64,
           height: 64,
@@ -43,21 +43,21 @@ void main() {
       );
 
     // render loop (wire the simulation & renderer together)
-    sim.onRender.listen((Array2d renderData) {
+    player.onRender.listen((CellGrid renderData) {
       // render the cell world state
       renderer.render(renderData);
     });
-    return sim;
+    return player;
   }
 
-  Simulator sim;
+  Player ca;
 
   void startSim() {
-    sim = createSim();
-    sim.start();
+    ca = createSim();
+    ca.start();
 
-    sim.onComplete.listen((SimulatorCompleteReason s) {
-      sim.stop();
+    ca.onComplete.listen((PlayerCompleteReason s) {
+      ca.stop();
       startSim();
     });
   }
@@ -70,8 +70,8 @@ void main() {
   final ButtonElement play = querySelector('#controls_play');
   final ButtonElement forward = querySelector('#controls_forward');
 
-  pause.onClick.listen((e) => sim.pause());
-  play.onClick.listen((e) => sim.resume());
-  back.onClick.listen((e) => sim.stepBack());
-  forward.onClick.listen((e) => sim.stepForward());
+  pause.onClick.listen((e) => ca.pause());
+  play.onClick.listen((e) => ca.resume());
+  back.onClick.listen((e) => ca.stepBack());
+  forward.onClick.listen((e) => ca.stepForward());
 }

@@ -5,7 +5,6 @@ import 'package:logging/logging.dart';
 import 'package:collection/collection.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/src/util/array_2d.dart';
 
 final _log = new Logger('cellular_automata.cell_world');
 
@@ -67,70 +66,31 @@ class CellWorld<T> {
     return _generations[_generations.length - 1 - ago];
   }
 
-  int _wrap(int v, int min, int max) =>
-      min != null && v < min ? v + max : (v >= max ? v - max : v);
-
-  int wrapX(int x) => _wrap(x, 0, width);
-  int wrapY(int y) => _wrap(y, 0, height);
-
-  /// returns the state of a cell
-  T getState(int x, int y, [int generationsAgo = 0]) {
-    int _x, _y;
-
-    if (wrap) {
-      _x = _wrap(x, 0, width);
-      _y = _wrap(y, 0, height);
-    } else {
-      _x = x < 0 || x > (width - 1) ? defaultState : x;
-      _y = y < 0 || y > (height - 1) ? defaultState : y;
-    }
-    return generation(generationsAgo)?.states.get(_x, _y) ?? defaultState;
-  }
-
-  /// returns neighboring cells
-  List<T> getNeighborhood(int x, int y, {String system: 'moore'}) {
-    switch (system) {
-
-      // TODO: make an enum
-      case 'moore':
-      default:
-        return [
-          getState(x - 1, y - 1),
-          getState(x, y - 1),
-          getState(x + 1, y - 1),
-          getState(x - 1, y),
-          getState(x + 1, y),
-          getState(x - 1, y + 1),
-          getState(x, y + 1),
-          getState(x + 1, y + 1)
-        ];
-    }
-  }
-
   CellWorld({this.width, this.height, this.defaultState, this.rules});
 
   /// apply a palette to the world state
-  Array2d<T> applyPalette<T>({
+  CellGrid<T> applyPalette<T>({
     Map palette,
     bool changesOnly,
   }) {
-    final output = new Array2d<T>(width, height);
+    final output = new CellGrid<T>(width, height);
 
     // TODO: could optimise by transforming to list?
-//    final output = new Array2d<T>.readonlyFrom(
+//    final output = new CellGrid<T>.readonlyFrom(
 //        world.width,
 //        world.generation().toList());
 
     for (num x = 0; x < width; x++) {
       for (num y = 0; y < height; y++) {
-        final state = getState(x, y);
+        final state = generation().states.get(x, y, wrap, defaultState);
 
         // only send changes (if generation not the first generation)
         if (_generations.length > 1 &&
             changesOnly &&
-            state == getState(x, y, 1)) continue;
+            state == generation(1).states.get(x, y, wrap, defaultState))
+          continue;
 
-        output.set(x, y, palette[getState(x, y)]);
+        output.set(x, y, palette[state], wrap);
       }
     }
     return output;
@@ -140,9 +100,9 @@ class CellWorld<T> {
     if (_generations.length > 1) _generations.removeLast();
   }
 
-  void newGeneration(Array2d<T> newStateArray) =>
+  void newGeneration(CellGrid<T> newStateArray) =>
       saveGeneration(new Generation<T>((generation()?.count ?? 0) + 1, width,
-          height, newStateArray, rules.whatToProcess(newStateArray, this)));
+          height, newStateArray, rules.gridActivity(newStateArray)));
 
   /// Saves the generation
   void saveGeneration(Generation<T> generation) {
@@ -153,17 +113,18 @@ class CellWorld<T> {
 
   /// Apply CA Rules on a new generation
   void applyRules([CARules alternativeRules]) {
-    final newStateArray = new Array2d<T>(width, height);
+    final newStateArray = new CellGrid<T>(width, height);
 
 //    final whatToProcess = rules.whatToProcess(generation(), this);
 
     for (var x = 0; x < width; x++)
       for (var y = 0; y < height; y++)
         if (generation().activity.get(x, y)) {
-          newStateArray.set(
-              x, y, (alternativeRules ?? rules).calculateState(x, y, this));
+          newStateArray.set(x, y,
+              (alternativeRules ?? rules).calculateState(x, y, this), wrap);
         } else
-          newStateArray.set(x, y, getState(x, y));
+          newStateArray.set(
+              x, y, generation().states.get(x, y, wrap, null), wrap);
 
     newGeneration(newStateArray);
 //    print (generation().states);
@@ -172,29 +133,5 @@ class CellWorld<T> {
   /// Apply a generator on a new generation
   void applyGenerator(CAGenerator generator) {
     newGeneration(generator.generate(width, height));
-  }
-
-// If a rule wants to process active cells and moores neighbors they can use this
-  Array2d<bool> activateStatesMooresNeighbors<T>(
-      List<T> activeStates, Array2d grid,
-      [List<T> processStates]) {
-//    final List<T> l = grid.toList(growable: false);
-    final o = new Array2d<bool>(grid.width, grid.height, false);
-
-    for (int y = 0; y < height; y++)
-      for (int x = 0; x < width; x++)
-        if (activeStates.contains(grid.get(x, y))) {
-          for (int y2 = y - 1; y2 <= y + 1; y2++) {
-            for (int x2 = x - 1; x2 <= x + 1; x2++) {
-              o.set(_wrap(x2, 0, width), _wrap(y2, 0, height), true);
-            }
-          }
-        }
-        // if we just want to process the cells not neighbors
-        else if (processStates != null &&
-            processStates.contains(grid.get(x, y)))
-          o.set(_wrap(x, 0, width), _wrap(y, 0, height), true);
-
-    return o;
   }
 }
