@@ -10,6 +10,8 @@ export 'package:cellular_automata/src/util/timer.dart';
 
 final _log = new Logger('cellular_automata.simulator');
 
+enum SimulatorCompleteReason { stable, duration }
+
 class Simulator {
   final CellWorld _world;
   Stream<int> _timer;
@@ -23,7 +25,7 @@ class Simulator {
 
   int _lastGenerationTime;
   int _stableCounter = 0; // counts the number of reported stable worlds
-  int _maxAge; // if make age is set then onStable called when this age is met
+  final int _maxAge; // onComplete called if this age is set and reached
 
   final Map _palette;
 
@@ -31,20 +33,30 @@ class Simulator {
   final StreamController<Array2d> _onRender = new StreamController<Array2d>();
   Stream<Array2d> get onRender => _onRender.stream;
 
-  // stable stream
-  final StreamController<bool> _onStable = new StreamController<bool>();
-  Stream<bool> get onStable => _onStable.stream;
+  // complete stream
+  final StreamController<SimulatorCompleteReason> _onComplete =
+      new StreamController<SimulatorCompleteReason>();
+  Stream<SimulatorCompleteReason> get onComplete => _onComplete.stream;
 
   Simulator(
       {CellWorld world,
       Duration generationDuration,
       CAGenerator generator,
       Map palette,
-      maxAge})
+      int maxAge,
+      Duration maxDuration})
       : _world = world,
         _palette = palette,
-        _maxAge = maxAge,
+        _maxAge = maxAge != null
+            ? maxAge
+            : (maxDuration != null
+                ? (maxDuration.inMilliseconds /
+                        generationDuration.inMilliseconds)
+                    .floor()
+                : null),
         _generationDuration = generationDuration {
+    _log.fine('Max Age: $_maxAge');
+
     // apply a generator if specified
     if (generator != null) {
       world.applyGenerator(generator);
@@ -112,21 +124,20 @@ class Simulator {
           'Activity: ${_world.activePercent}% | '
           'FPS: $fps/${(1000/_timerDuration.inMilliseconds).round()}');
 
-    // check if stable...
+    // check if scene is complete / stable...
     if (generationCounter % 20 == 0) {
-      if (_maxAge != null && _maxAge < _world.generation().count) {
-        _log.info('Max age reached...');
-        _onStable.add(true);
-        return;
-      }
+      if (_maxAge != null && _maxAge < _world.generation().count)
+        return _onComplete.add(SimulatorCompleteReason.duration);
+
       if (_world.isStable) {
         _stableCounter++;
 
         final int activityPercent = _world.activePercent;
         // based on percentage broadcast as stable
         if ((activityPercent < 5) ||
-            (activityPercent < 10 && _stableCounter > 3) ||
-            (_stableCounter > 5)) _onStable.add(true);
+            (activityPercent < 10 && _stableCounter > 5) ||
+            (_stableCounter > 8))
+          _onComplete.add(SimulatorCompleteReason.stable);
 
         _log.info(
             'Stable scene counter: x$_stableCounter World activity: $activityPercent%');

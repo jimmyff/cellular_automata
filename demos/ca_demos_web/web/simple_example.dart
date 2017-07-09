@@ -56,7 +56,7 @@ void main() {
     sim = createSim();
     sim.start();
 
-    sim.onStable.listen((bool s) {
+    sim.onComplete.listen((SimulatorCompleteReason s) {
       sim.stop();
       startSim();
     });

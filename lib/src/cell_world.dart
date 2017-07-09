@@ -14,7 +14,7 @@ class CellWorld<T> {
 
   bool wrap = true;
 
-  final _generationHistoryLength = 32;
+  final _generationHistoryLength = 62;
 
   int get activeCellCount =>
       _generations.isEmpty ? 0 : generation(0).activeCells;
@@ -36,11 +36,11 @@ class CellWorld<T> {
         eq(generation(0).activity, generation(2).activity)) return true;
 
     // Checks for repeating patterns of activeCellCount
-    if (_generations.length > 24)
-      for (int i = 1; i <= 8; i++) {
+    if (_generations.length > 60)
+      for (int i = 1; i <= 30; i++) {
         bool stable = true;
         // i = generation cycle count
-        for (int g = 0; g < 3; g++)
+        for (int g = 0; g < 2; g++)
           if (generation(g).activeCells !=
               generation(g + (i * g)).activeCells) {
             stable = false;
@@ -166,6 +166,7 @@ class CellWorld<T> {
           newStateArray.set(x, y, getState(x, y));
 
     newGeneration(newStateArray);
+//    print (generation().states);
   }
 
   /// Apply a generator on a new generation

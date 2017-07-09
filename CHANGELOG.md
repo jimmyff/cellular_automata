@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8
+
+- `MCellGenerations` rule parser added. This can parse all MCell Generations configs. 
+- Credits
+- `onStable` renamed `onComplete`, now passes `SimulatorCompleteReason` enum value. Current states are: `duration` and `stable`
+- Demos updated to include MCell
+
 ## 0.7
 
 - Optimised `MajorityVote` Rules, utilises edge detection to determine activity

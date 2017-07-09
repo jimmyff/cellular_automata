@@ -10,6 +10,7 @@ import 'package:params/client.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/renderer_canvas.dart';
 import 'package:cellular_automata/rules.dart';
+import 'package:cellular_automata/rules_mcell.dart';
 
 // Fully featured example of using cellular_automata
 Simulator createSimulation({
@@ -30,7 +31,8 @@ Simulator createSimulation({
       world: world,
       generationDuration: new Duration(milliseconds: speedMs),
       palette: palette,
-      generator: generator);
+      generator: generator,
+      maxDuration: new Duration(seconds: 60));
 
   final renderer = new CanvasRenderer(width: worldWidth, height: worldHeight)
     ..initCanvas(
@@ -162,6 +164,27 @@ Simulator _initSimulation([dynamic _]) {
           valueFalse: BriansBrainStates.OFF);
       break;
 
+    case 'mcell_generations':
+      String rules_config = params['rules_config'];
+      world = new CellWorld<int>(
+          rules: new MCellGenerations.fromConfigString(rules_config),
+          width: worldWidth,
+          height: worldHeight,
+          defaultState: 0);
+
+      palette = new Map<int, String>.from({
+        0: '#000000',
+        1: '#A2EAF9',
+        2: '#F5A2F9',
+        3: '#D0DE34',
+        4: '#C35E00',
+        5: '#C3005F',
+      });
+
+      generator = new MathematicalGenerator<int>(
+          type: generatorType, valueTrue: 1, valueFalse: 0);
+      break;
+
     case 'majority_vote':
       world = new CellWorld<int>(
           rules: new MajorityVote(),
@@ -212,12 +235,11 @@ Future<Null> main() async {
     sim = _initSimulation();
 
     // render loop (wire the simulation & renderer together)
-    sim.onStable.listen((bool stale) {
-      print('Stale Scene: Resetting');
+    sim.onComplete.listen((SimulatorCompleteReason c) {
+      print('Sim complete: $c');
       sim.stop();
       startNewSim();
     });
-
     sim.start(delay: new Duration(milliseconds: 100));
   }
 
