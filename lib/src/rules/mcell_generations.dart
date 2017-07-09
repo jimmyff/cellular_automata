@@ -4,16 +4,6 @@ library cellular_automata.rules.mcell.generations;
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 
-//enum MCellGenerationsRuleOptions {
-//  starWars,
-//  briansBrain
-//}
-//
-//Map<MCellGenerationsRuleOptions, String> MCellGenerationsRule = {
-//  MCellGenerationsRuleOptions.starWars : '',
-//  MCellGenerationsRuleOptions.briansBrain : ''
-//}
-
 class MCellGenerations extends CARules {
   /// survival requirement
   List<int> neighborsToSurvive;
@@ -30,19 +20,22 @@ class MCellGenerations extends CARules {
 
   factory MCellGenerations.fromConfigString(String config) {
     final RegExp exp = new RegExp(r"([0-9]*)\/([0-9]*)\/([0-9]*)");
-    print(config);
     final match = exp.firstMatch(config);
-    print(
-        'config 1: ${match.group(1)} 2: ${match.group(2)} 3: ${match.group(3)} ');
 
     return new MCellGenerations(
-      neighborsToSurvive: match.group(1).split('').map((s) => int.parse(s)),
-      neighborsForBirth: match.group(2).split('').map((s) => int.parse(s)),
+      neighborsToSurvive: match
+          .group(1)
+          .split('')
+          .map((s) => int.parse(s))
+          .toList(growable: false),
+      neighborsForBirth: match
+          .group(2)
+          .split('')
+          .map((s) => int.parse(s))
+          .toList(growable: false),
       stateCount: int.parse(match.group(3)),
     );
   }
-
-// TODO: don't hardcode wrap
 
   @override
   CellGrid<bool> gridActivity(CellGrid grid) =>
