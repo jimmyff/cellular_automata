@@ -9,4 +9,3 @@ Below are the authors of the Cellular Automata rules & systems that have been im
   - **John Elliott**: SediMental
   - **Brian Prentice**: Rake
   - **Jimmy Forrester-Fellowes**: Builders (2017)
-  

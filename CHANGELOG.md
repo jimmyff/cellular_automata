@@ -7,24 +7,23 @@
 
 ## 0.8
 
-- `MCellGenerations` rule parser added. This can parse all MCell Generations configs. 
+- `MCellGenerations` rule parser added. This can parse all MCell Generations configs.
 - Credits
 - `onStable` renamed `onComplete`, now passes `SimulatorCompleteReason` enum value. Current states are: `duration` and `stable`
 - Demos updated to include MCell
 - Credits file created to credit those that wrote/discovered the rules
-- Decent Refactor, reorganised stuff! 
+- Decent Refactor, reorganised stuff!
   - `Simulator` renamed `Player`
   - `Array2D` replaced with `CellGrid` which combines Array2D with CA specific functionality which simplifies `CellWorld`.
   - `CARules` interface updated
   - `CellWorld` renamed `Simulator`
-   
 
 ## 0.7
 
 - Optimised `MajorityVote` Rules, utilises edge detection to determine activity
 - Added `paintFullSize` option to `CanvasRenderer`: This allows the scene to be painted at actual size rather than small and then resized via CSS.
 - Added `maxAge` as a `Simulator` constructor parameter, if this is set then `onStable` is called when the generation count surpasses `maxAge`
-- Added `package:logging` so debug information can be enabled / disabled 
+- Added `package:logging` so debug information can be enabled / disabled
 - Updated demos
 
 ## 0.6
@@ -54,7 +53,7 @@
 
 - Optimised cell processing, now only processes cells that neighbor active states
 - Added tests (more to add)
-- Improved StageXL bitmap colours crispness by adding frame margin 
+- Improved StageXL bitmap colours crispness by adding frame margin
 
 ## 0.1
 

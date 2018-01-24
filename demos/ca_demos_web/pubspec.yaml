@@ -5,7 +5,7 @@ homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
 environment:
-  sdk: '>=2.0.0-dev.19.0 <3.0.0'
+  sdk: '>=1.20.1 <=2.0.0-dev.19.0'
 
 dependencies:
   cellular_automata:
