@@ -197,10 +197,7 @@ Player _initSimulation([dynamic _]) {
           defaultState: false,
           wrap: true);
 
-      palette = new Map<bool, String>.from({
-        false: '#000000',
-        true: '#FFFE01'
-      });
+      palette = new Map<bool, String>.from({false: '#000000', true: '#FFFE01'});
 
       generator = new MathematicalGenerator<bool>(
           type: generatorType, valueTrue: true, valueFalse: false);
