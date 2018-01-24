@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9
+
+- Dart 2.0. Tested and all works correctly.
+- Enabled Travis CI: [https://travis-ci.org/jimmyff/cellular_automata/](https://travis-ci.org/jimmyff/cellular_automata/)
+
 ## 0.8
 
 - `MCellGenerations` rule parser added. This can parse all MCell Generations configs. 

@@ -194,19 +194,16 @@ Player _initSimulation([dynamic _]) {
           rules: new MajorityVote(),
           width: worldWidth,
           height: worldHeight,
-          defaultState: 0,
+          defaultState: false,
           wrap: true);
 
-      palette = new Map<int, String>.from({
-        0: '#000000',
-        1: '#FFFE01',
-        2: '#FFFE01',
-        3: '#FFFE01',
-        4: '#FFFE01',
+      palette = new Map<bool, String>.from({
+        false: '#000000',
+        true: '#FFFE01'
       });
 
-      generator = new MathematicalGenerator<int>(
-          type: generatorType, valueTrue: 1, valueFalse: 0);
+      generator = new MathematicalGenerator<bool>(
+          type: generatorType, valueTrue: true, valueFalse: false);
       break;
   }
 

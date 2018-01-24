@@ -76,9 +76,14 @@ class Player {
   void stop() =>
       _timerSubscription != null ? _timerSubscription.cancel() : null;
 
-  void stepForward() {
-    if (!_timerSubscription.isPaused) _timerSubscription.pause();
-    _tick();
+  Future<CellGrid<dynamic>> render() async {
+    return await _callRender();
+  }
+
+  Future<CellGrid<dynamic>> stepForward({bool changesOnly}) async {
+    if (_timerSubscription != null && !_timerSubscription.isPaused)
+      _timerSubscription.pause();
+    return await _tick(changesOnly: changesOnly);
   }
 
   void stepBack() {
@@ -87,9 +92,11 @@ class Player {
     _callRender(changesOnly: false);
   }
 
-  void _callRender({bool changesOnly: true}) {
-    _onRender
-        .add(_sim.applyPalette(palette: _palette, changesOnly: changesOnly));
+  Future<CellGrid<dynamic>> _callRender({bool changesOnly: true}) async {
+    final renderData =
+        await _sim.applyPalette(palette: _palette, changesOnly: changesOnly);
+    _onRender.add(renderData);
+    return renderData;
   }
 
   void _calculateAverageFps() {
@@ -110,13 +117,15 @@ class Player {
     _timerSubscription = _timer.listen((int counter) => _tick());
   }
 
-  void _tick() {
+  Future<CellGrid<dynamic>> _tick({bool changesOnly}) async {
     _sim.applyRules();
-    _callRender();
+    final renderData = await _callRender(changesOnly: changesOnly);
     _calculateAverageFps();
 
     // log to console statistics
-    if (generationCounter % (2000 / _frameDuration.inMilliseconds).round() == 0)
+    if (_frameDuration != null &&
+        _timerDuration != null &&
+        generationCounter % (2000 / _frameDuration.inMilliseconds).round() == 0)
       _log.info('Gen: $generationCounter | '
           'Activity: ${_sim.activePercent}% | '
           'FPS: $fps/${(1000/_timerDuration.inMilliseconds).round()}');
@@ -124,9 +133,8 @@ class Player {
     // check if scene is complete / stable...
     if (generationCounter % 20 == 0) {
       if (_maxAge != null && _maxAge < _sim.generation().count)
-        return _onComplete.add(SimulationCompleteReason.duration);
-
-      if (_sim.isStable) {
+        _onComplete.add(SimulationCompleteReason.duration);
+      else if (_sim.isStable) {
         _stableCounter++;
 
         final int activityPercent = _sim.activePercent;
@@ -141,5 +149,6 @@ class Player {
       } else
         _stableCounter = 0;
     }
+    return renderData;
   }
 }

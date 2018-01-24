@@ -1,12 +1,14 @@
-# Cellular Automata
+# Cellular Automata 
+[![Build Status](https://travis-ci.org/jimmyff/cellular_automata.svg?branch=master)](https://travis-ci.org/jimmyff/cellular_automata)
   
 A cellular automata library / playground written in Dart. Happily accepting pull requests! ^_^
  
  * Author: Jimmy Forrester-Fellowes ([jimmyff](https://github.com/jimmyff))
  * Github: [https://github.com/jimmyff/cellular_automata](https://github.com/jimmyff/cellular_automata)
  * Dart Pub: [https://pub.dartlang.org/packages/cellular_automata](https://pub.dartlang.org/packages/cellular_automata)
+ * Travis: [https://travis-ci.org/jimmyff/cellular_automata/](https://travis-ci.org/jimmyff/cellular_automata/)
  * Demos: [http://jimmyff.github.io/cellular_automata](http://jimmyff.github.io/cellular_automata)
-  
+
 ## Features
 
  * Simple system for writing optimised rules

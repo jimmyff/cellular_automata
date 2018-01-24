@@ -27,38 +27,21 @@ class MajorityVote extends CARules {
   }
 
   @override
-  int calculateState(int x, int y, CellGrid grid) {
-    // final int currentState = world.getState(x, y);
+  bool calculateState(int x, int y, CellGrid grid) {
+    // Distribution: {STATE, COUNT}
+    final Map<bool, int> distribution = {true: 0, false: 0};
+    final List<bool> neighborhood =
+        grid.getNeighborhood(x, y, wrap, defaultState);
 
-    // Distribution: {STATE, [COUNT, STATE]}
-    final Map<int, List<int>> distribution = {};
-    grid.getNeighborhood(x, y, wrap, defaultState)
-      ..forEach((int i) {
-        if (distribution[i] == null)
-          distribution[i] = [1, i];
-        else
-          distribution[i][0]++;
-      });
+    for (int i = 0, l = neighborhood.length; i < l; i++)
+      distribution[neighborhood[i]]++;
 
-    // Sort the Distribution
-    List<int> highestStates = [];
-    int highestStateCount = 0;
-    distribution.values.toList(growable: false)
-      ..forEach((v) {
-        if (v[0] > highestStateCount) {
-          highestStateCount = v[0];
-          highestStates = [v[1]];
-        } else if (v[0] == highestStateCount) {
-          highestStates.add(v[1]);
-        }
-      });
+    // At the moment Majority Vote is type bool so we won't itterate
+    // in the future we may want to have have more than 2 states
 
-    // if a majority return that state
-    if (highestStates.length == 1) return highestStates[0];
-
-    // If not a majority - random select a winning state
-    return highestStates[(new math.Random().nextInt(highestStates.length))];
-
-    // TODO: implement other drawer handlers
+    if (distribution[false] == distribution[true])
+      return new math.Random().nextInt(2) == 1;
+    else
+      return (distribution[true] > distribution[false]);
   }
 }

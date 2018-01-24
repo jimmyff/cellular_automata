@@ -1,11 +1,11 @@
 name: ca_demos_web
 description: Web demos utilising the cellular_automata lib
-version: 0.8.0
+version: 0.9.0
 homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
 environment:
-  sdk: '>=1.20.1 <2.0.0'
+  sdk: '>=2.0.0-dev.19.0 <3.0.0'
 
 dependencies:
   cellular_automata:
@@ -24,5 +24,5 @@ dev_dependencies:
 transformers:
 - $dart2js:
     checked: false
-    minify: false
-    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']
+    minify: true
+#    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']

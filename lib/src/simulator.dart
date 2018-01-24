@@ -2,8 +2,8 @@
 /// checks for stability (repeating patterns of activity)
 library cellular_automata.simulator;
 
+import 'dart:async';
 import 'package:logging/logging.dart';
-import 'package:collection/collection.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
 
@@ -30,13 +30,6 @@ class Simulator<T> {
 
   /// Checks to see if recent generations are identical or repeating
   bool get isStable {
-    final Function eq = const ListEquality().equals;
-
-    // check if the last 3 generations were identical
-    if (_generations.length > 2) if (eq(
-            generation(0).activity, generation(1).activity) &&
-        eq(generation(0).activity, generation(2).activity)) return true;
-
     // Checks for repeating patterns of activeCellCount
     if (_generations.length > 60)
       for (int i = 1; i <= 30; i++) {
@@ -70,10 +63,10 @@ class Simulator<T> {
   }
 
   /// apply a palette to the current state
-  CellGrid<T> applyPalette<T>({
+  Future<CellGrid<T>> applyPalette<T>({
     Map palette,
     bool changesOnly,
-  }) {
+  }) async {
     final output = new CellGrid<T>(width, height);
 
     // TODO: could optimise by transforming to list?
