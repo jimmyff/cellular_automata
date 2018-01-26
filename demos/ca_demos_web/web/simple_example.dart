@@ -3,8 +3,9 @@
 
 import 'dart:html';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/renderer_canvas.dart';
 import 'package:cellular_automata/rules.dart';
+
+import 'package:cellular_automata_web/renderer_canvas.dart';
 
 // Simple example of using cellular_automata
 void main() {

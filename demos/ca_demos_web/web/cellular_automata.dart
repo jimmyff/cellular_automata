@@ -1,16 +1,17 @@
 // Copyright (c) 2017, jimmyff. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-import 'dart:html';
 import 'dart:async';
+import 'dart:html';
 
 import 'package:logging/logging.dart';
 import 'package:params/client.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/renderer_canvas.dart';
 import 'package:cellular_automata/rules.dart';
 import 'package:cellular_automata/rules_mcell.dart';
+
+import 'package:cellular_automata_web/renderer_canvas.dart';
 
 // Fully featured example of using cellular_automata
 Player createSimulation({
@@ -168,7 +169,7 @@ Player _initSimulation([dynamic _]) {
       break;
 
     case 'mcell_generations':
-      String rules_config = params['rules_config'];
+      final String rules_config = params['rules_config'];
       world = new Simulator<int>(
           rules: new MCellGenerations.fromConfigString(rules_config),
           width: worldWidth,

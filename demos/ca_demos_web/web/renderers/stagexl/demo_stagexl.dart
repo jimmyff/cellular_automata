@@ -3,8 +3,8 @@
 
 import 'dart:html';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'package:cellular_automata/renderer_stagexl.dart';
 import 'package:cellular_automata/rules.dart';
+import 'package:cellular_automata_web/renderer_stagexl.dart';
 
 import 'package:stagexl/src/ui/color.dart';
 

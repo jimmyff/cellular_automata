@@ -73,8 +73,14 @@ class Player {
   void pause() =>
       !_timerSubscription.isPaused ? _timerSubscription.pause() : null;
 
-  void stop() =>
-      _timerSubscription != null ? _timerSubscription.cancel() : null;
+  Future<Null> stop() async {
+      if (_timerSubscription != null) {
+        await _timerSubscription.cancel(); 
+        _timerSubscription = null;
+    }
+  }
+
+  bool get isRunning => _timerSubscription != null && !_timerSubscription.isPaused;
 
   Future<CellGrid<dynamic>> render() async {
     return await _callRender();

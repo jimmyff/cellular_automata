@@ -9,17 +9,14 @@ environment:
 
 dependencies:
   collection: '^1.14.1'
-  stagexl: '^1.2.0+3'
   logging: '^0.11.3+1'
   #  vector_math: "^2.0.4"
 
 dev_dependencies:
-  browser: ^0.10.0
   bwu_grinder_tasks: '^0.1.1-dev'
-  params: '^0.0.4'
   dart_to_js_script_rewriter: ^1.0.1
   test: '^0.12.23+1'
-  color: '^2.0.2'
+  # color: '^2.0.2'
 
 transformers:
 - dart_to_js_script_rewriter
