@@ -1,11 +1,11 @@
 name: cellular_automata
-description: A cellular automata library & playground
+description: A library and platform for playing and experimenting with cellular automata.
 version: 0.9.0
 homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
 environment:
-  sdk: '>=1.20.1 <=2.0.0-dev.19.0'
+  sdk: '>=1.20.1 <2.0.0'
 
 dependencies:
   collection: '^1.14.1'

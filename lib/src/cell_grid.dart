@@ -75,7 +75,7 @@ class CellGrid<T> extends ListBase<T> {
   T get(int x, int y, [bool wrap, T defaultValue]) {
     int _x = x, _y = y;
 
-    if (wrap) {
+    if (wrap == true) {
       _x = wrapX(x);
       _y = wrapY(y);
     } else if (x < 0 || x > (width - 1) || y < 0 || y > (height - 1))
@@ -88,7 +88,7 @@ class CellGrid<T> extends ListBase<T> {
   void set(int x, int y, T value, bool wrap) {
     int _x = x, _y = y;
 
-    if (wrap) {
+    if (wrap == true) {
       _x = wrapX(x);
       _y = wrapY(y);
     } else if (x < 0 || x > (width - 1) || y < 0 || y > (height - 1)) return;

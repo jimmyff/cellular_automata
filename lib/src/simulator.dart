@@ -81,7 +81,7 @@ class Simulator<T> {
 
         // only send changes (if generation not the first generation)
         if (_generations.length > 1 &&
-            changesOnly &&
+            changesOnly == true &&
             state ==
                 generation(1).states.get(x, y, rules.wrap, rules.defaultState))
           continue;
@@ -114,7 +114,7 @@ class Simulator<T> {
 
     for (var x = 0; x < width; x++)
       for (var y = 0; y < height; y++)
-        if (generation().activity.get(x, y)) {
+        if (generation().activity.get(x, y, rules.wrap)) {
           newStateArray.set(
               x,
               y,
