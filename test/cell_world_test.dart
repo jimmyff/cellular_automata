@@ -5,7 +5,7 @@ import 'package:cellular_automata/rules.dart';
 void main() {
   group("Cell World", () {
     test("Get Neighbor indicies", () {
-      final sim = new Simulator<bool>(
+      final sim = new Automaton<bool, bool>(
           width: 8,
           height: 8,
           defaultState: false,

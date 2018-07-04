@@ -4,17 +4,15 @@ import 'package:cellular_automata/src/renderers/ascii_renderer.dart';
 
 // Simple example of cellular_automata.
 // For prettier outputs see the platform specific renderers
-// Run in terminal with command: pub run example/game_of_life.dart
+// Run in terminal with command: pub run example/majority_vote.dart
 void main() {
   final width = 48;
   final height = 22;
 
-  final palette = new Map<GameOfLifeStates, String>.from({
-    GameOfLifeStates.DEAD: ' ',
-    GameOfLifeStates.DEAD_UNDER_POPULATED: '_',
-    GameOfLifeStates.DEAD_OVER_POPULATED: '_',
-    GameOfLifeStates.ALIVE: 'O',
-    GameOfLifeStates.ALIVE_BORN: '*',
+  final palette = new Map<BriansBrainStates, String>.from({
+    BriansBrainStates.OFF: '_',
+    BriansBrainStates.DYING: 'x',
+    BriansBrainStates.ON: 'O'
   });
 
   final AsciiRenderer renderer = new AsciiRenderer();
@@ -28,17 +26,17 @@ void main() {
       scene
         ..clearAutomata()
         ..addAutomaton(
-            automaton: new Automaton<GameOfLifeStates, String>(
+            automaton: new Automaton<BriansBrainStates, String>(
           width: width,
           height: height,
-          defaultState: GameOfLifeStates.DEAD,
+          defaultState: BriansBrainStates.OFF,
           palette: palette,
           wrap: true,
-          rules: new GameOfLife(),
-        )..applyGenerator(new MathematicalGenerator<GameOfLifeStates>(
+          rules: new BriansBrain(),
+        )..applyGenerator(new MathematicalGenerator<BriansBrainStates>(
                 type: MathematicalGenerators.RANDOM,
-                valueTrue: GameOfLifeStates.ALIVE_BORN,
-                valueFalse: GameOfLifeStates.DEAD)));
+                valueTrue: BriansBrainStates.ON,
+                valueFalse: BriansBrainStates.OFF)));
     })
     ..onFullPaint.listen((CellGrid<String> snapshot) {
       renderer
@@ -46,7 +44,7 @@ void main() {
         ..render(snapshot);
 
       print('');
-      print('Rules: Conway\'s Game of Life');
+      print('Rules: Brian\'s Brain');
       print('Generation: ${scene.generationCounter}');
       print('');
     })

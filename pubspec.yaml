@@ -1,26 +1,14 @@
 name: cellular_automata
 description: A library and platform for playing and experimenting with cellular automata.
-version: 0.9.0
+version: 1.0.0
 homepage: https://github.com/jimmyff/cellular_automata
 author: jimmyff <jimmyff@jimmyff.uk>
 
 environment:
-  sdk: '>=1.20.1 <2.0.0'
+  sdk: '>=2.0.0-dev.63.0 <2.0.0'
 
 dependencies:
-  collection: '^1.14.1'
   logging: '^0.11.3+1'
-  #  vector_math: "^2.0.4"
 
 dev_dependencies:
-  bwu_grinder_tasks: '^0.1.1-dev'
-  dart_to_js_script_rewriter: ^1.0.1
-  test: '^0.12.23+1'
-  # color: '^2.0.2'
-
-transformers:
-- dart_to_js_script_rewriter
-- $dart2js:
-    checked: false
-    minify: true
-    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']
+  test: '^1.2.0'

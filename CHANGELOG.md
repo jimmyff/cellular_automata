@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0
+
+- Web renderers have been moved into a new package: `cellular_automata_web`. This core package can now be loaded into none web enviroments such as flutter etc.
+- `examples/` folder now contains numerous ascii based examples that can be run from command-line
+- `Player` renamed `Scene`
+- `Simulator` renamed `Automaton`
+- `onRender` renamed `onPaint`
+- `onPaintFull` now available which will paint a full scene every generation. Note: This is a not as performant as `onPaint` which will only paints the changes in a scene
+- `AsciiRenderer` added. This is a very simple text based renderer, used in the examples.
+- `onPrepare` fired before scene starts running. This is when a generator could be used to seed the automaton.
+- Now supports multiple automata running in a single scene. used `addAutomaton()` to add automata
+
 ## 0.9
 
 - Dart 2.0. Tested and all works correctly.

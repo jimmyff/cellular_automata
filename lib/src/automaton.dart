@@ -9,8 +9,8 @@ import 'package:cellular_automata/cellular_automata.dart';
 
 final _log = new Logger('cellular_automata.simulator');
 
-class Simulator<T> {
-  final List<Generation<T>> _generations = [];
+class Automaton<CellType, PaletteType> {
+  final List<Generation<CellType>> _generations = [];
 
   final _generationHistoryLength = 62;
 
@@ -23,8 +23,15 @@ class Simulator<T> {
   final int height;
   CARules rules;
 
-  Simulator({this.width, this.height, this.rules, defaultState, wrap: true}) {
-    assert(rules != null);
+  Map<CellType, PaletteType> palette;
+
+  Automaton(
+      {this.width,
+      this.height,
+      this.palette,
+      this.rules,
+      defaultState,
+      wrap: true}) {
     rules.setup(wrap: wrap, defaultState: defaultState);
   }
 
@@ -57,39 +64,32 @@ class Simulator<T> {
   }
 
   /// returns the state of the world a number of generations ago
-  Generation<T> generation([int ago = 0]) {
+  Generation<CellType> generation([int ago = 0]) {
     if (_generations.length - 1 < ago) return null;
     return _generations[_generations.length - 1 - ago];
   }
 
   /// apply a palette to the current state
-  Future<CellGrid<T>> applyPalette<T>({
-    Map palette,
-    bool changesOnly,
-  }) async {
-    final output = new CellGrid<T>(width, height);
-
-    // TODO: could optimise by transforming to list?
-//    final output = new CellGrid<T>.readonlyFrom(
-//        world.width,
-//        world.generation().toList());
-
-    for (num x = 0; x < width; x++) {
-      for (num y = 0; y < height; y++) {
-        final state =
-            generation().states.get(x, y, rules.wrap, rules.defaultState);
-
-        // only send changes (if generation not the first generation)
-        if (_generations.length > 1 &&
-            changesOnly == true &&
-            state ==
-                generation(1).states.get(x, y, rules.wrap, rules.defaultState))
-          continue;
-
-        output.set(x, y, palette[state], rules.wrap);
-      }
+  CellGrid<PaletteType> paint({
+    bool fullRefresh: false,
+  }) {
+    // Return the whole automaton painted
+    if (_generations.length < 2 || fullRefresh) {
+      return new CellGrid<PaletteType>.readonlyFrom(
+          width, generation().states.map((t) => palette[t]));
     }
-    return output;
+
+    // Return only the changes painted
+    final statesNew = generation().states;
+    final statesOld = generation(1).states;
+
+    return new CellGrid<PaletteType>.readonlyFrom(
+        width,
+        new List<PaletteType>.generate(
+            statesOld.length,
+            (i) => statesOld[i] == statesNew[i]
+                ? null
+                : (statesNew[i] == null ? null : palette[statesNew[i]])));
   }
 
   void rewind() {
@@ -97,12 +97,12 @@ class Simulator<T> {
   }
 
   // Creates a new generation
-  void newGeneration(CellGrid<T> newStateArray) =>
-      saveGeneration(new Generation<T>((generation()?.count ?? 0) + 1, width,
-          height, newStateArray, rules.gridActivity(newStateArray)));
+  void newGeneration(CellGrid<CellType> newStateArray) =>
+      saveGeneration(new Generation<CellType>((generation()?.count ?? 0) + 1,
+          width, height, newStateArray, rules.gridActivity(newStateArray)));
 
   /// Saves the new generation
-  void saveGeneration(Generation<T> generation) {
+  void saveGeneration(Generation<CellType> generation) {
     _generations.add(generation);
     if (_generations.length > _generationHistoryLength)
       _generations.removeRange(0, 1);
@@ -110,7 +110,7 @@ class Simulator<T> {
 
   /// Apply CA Rules and create a new generation
   void applyRules([CARules alternativeRules]) {
-    final newStateArray = new CellGrid<T>(width, height);
+    final newStateArray = new CellGrid<CellType>(width, height);
 
     for (var x = 0; x < width; x++)
       for (var y = 0; y < height; y++)

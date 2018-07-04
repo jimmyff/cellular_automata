@@ -4,10 +4,11 @@
 
 A cellular automata library / playground written in Dart. Happily accepting pull requests! ^_^
 
-* Demos: [http://jimmyff.github.io/cellular_automata](http://jimmyff.github.io/cellular_automata)
+* Web demos: [http://jimmyff.github.io/cellular_automata](http://jimmyff.github.io/cellular_automata)
 * Author: Jimmy Forrester-Fellowes ([jimmyff](https://github.com/jimmyff))
 * Github: [https://github.com/jimmyff/cellular_automata](https://github.com/jimmyff/cellular_automata)
-* Dart Pub: [https://pub.dartlang.org/packages/cellular_automata](https://pub.dartlang.org/packages/cellular_automata)
+* Main dart package: [https://pub.dartlang.org/packages/cellular_automata](https://pub.dartlang.org/packages/cellular_automata)
+* Web renderers package: [https://pub.dartlang.org/packages/cellular_automata_web](https://pub.dartlang.org/packages/cellular_automata_web)
 * Travis CI: [https://travis-ci.org/jimmyff/cellular_automata/](https://travis-ci.org/jimmyff/cellular_automata/)
 
 ## Features
@@ -37,25 +38,18 @@ A cellular automata library / playground written in Dart. Happily accepting pull
   * Sedi Mental
   * Frozen Sprials
 
-## Demos
+## Examples
 
-See the `demos/` [folder](https://github.com/jimmyff/cellular_automata/tree/master/demos) for demos. You can try the [hosted demos](http://jimmyff.github.io/cellular_automata) here.
+See the `examples/` [folder](https://github.com/jimmyff/cellular_automata/tree/master/examples) for some simple code examples.
 
-## Performance
+## Web demos
 
-Dartium performance is significantly faster than compiled performance at the moment. Also there are some generator [defects](https://github.com/dart-lang/sdk/issues/30049) that are yet to be resolved. To try and increase use the `trust-type-annotations` flag in your pubspec:
-
-```yaml
-transformers:
-- $dart2js:
-    checked: false
-    minify: true
-    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']
-
-```
+See the `demos/` [folder](https://github.com/jimmyff/cellular_automata_web/tree/master/demos) for demos. You can try the [hosted demos](http://jimmyff.github.io/cellular_automata) here.
 
 ## Roadmap
 
+* En route: Multiple simulations/rule-sets running in a single scene
+* En route: Flutter renderer
 * Add more MCell rule parsers
 * Add MCell rule database
 * Add multiple states to 'Majority Vote'
@@ -64,13 +58,10 @@ transformers:
 * Add a multiple states generator
 * Add more tests
 * Transitions for switching between two simulations
-* Multiple simulations/rule-sets running in a single scene
 * Generated color palettes
 * Interactive mode (edit mode)
 * Analysis tools (histograms for state counts)
 * Add an LED Matrix renderer for raspberry pi using GPIO pins
-* Flutter renderer
-* CLI renderer
 * Hexagonal grids
 * Infinite world size support
 

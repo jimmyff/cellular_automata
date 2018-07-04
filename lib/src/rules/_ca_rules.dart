@@ -11,7 +11,7 @@ abstract class CARules {
   CellGrid<bool> gridActivity(CellGrid grid) =>
       new CellGrid<bool>(grid.width, grid.height, true);
 
-  void setup({bool wrap: true, dynamic defaultState: null}) {
+  void setup({bool wrap: true, dynamic defaultState}) {
     this.wrap = wrap;
     this.defaultState = defaultState;
   }

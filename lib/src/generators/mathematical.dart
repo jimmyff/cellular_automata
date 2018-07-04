@@ -1,7 +1,6 @@
 library cellular_automata.generators.mathematical;
 
 import 'dart:math' as math;
-
 import 'package:logging/logging.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';
@@ -39,18 +38,28 @@ class MathematicalGenerator<T> extends CAGenerator {
 
     // TODO: not working correctly
     MathematicalGenerators.ARCS: (int x, int y) =>
-        (y > 0) && (x % y) & (x ^ y) > 2,
+        (y > 0) && (x % y) & (x ^ y).toSigned(32) > 2,
 
-    MathematicalGenerators.DIAGONAL_STRIPES: (int x, int y) => (x ^ y) % 8 == 0,
-    MathematicalGenerators.CHESS: (int x, int y) => (x ^ y).abs() % 8 < 4,
-    MathematicalGenerators.BLOCKS: (int x, int y) => (((x ^ y) > ~x) && y <= 0),
-    MathematicalGenerators.BLOCKS2: (int x, int y) => (x ^ y) + x >= 0,
-    MathematicalGenerators.ENDLESS_SIERPINSKI: (int x, int y) =>
-        (x ^ y) + x - y == 0,
+    MathematicalGenerators.DIAGONAL_STRIPES: (int x, int y) =>
+        (x ^ y).toSigned(32) % 8 == 0,
+    MathematicalGenerators.CHESS: (int x, int y) =>
+        (x ^ y).toSigned(32).abs() % 8 < 4,
+    MathematicalGenerators.BLOCKS: (int x, int y) =>
+        (((x ^ y).toSigned(32) > ~x) && y <= 0),
+    MathematicalGenerators.BLOCKS2: (int x, int y) =>
+        (x ^ y).toSigned(32) + x >= 0,
+    MathematicalGenerators.ENDLESS_SIERPINSKI: (int x, int y) {
+      final num val = (x ^ y).toSigned(32) + x - y;
+      return val == 0;
+    },
     MathematicalGenerators.SIERPINSKI_LEVEL10: (int x, int y) =>
-        ((x ^ y) + x - y) % 1024 == 0,
-    MathematicalGenerators.SIERPINSKI_MOUNTAINS: (int x, int y) =>
-        ((x ^ y) + y - x) == 0 || ((x ^ y) + y - x).remainder(y) == 0,
+        ((x ^ y).toSigned(32) + x - y) % 1024 == 0,
+    MathematicalGenerators.SIERPINSKI_MOUNTAINS: (int x, int y) {
+      final num val = ((x ^ y).toSigned(32) + y - x);
+      if (val == 0) return true;
+      final num valR = ((x ^ y) + y - x).remainder(y);
+      return val == 0 || valR == 0;
+    },
 //    MathematicalGenerators.STABLE: (int x, int y) =>
 //      (x ^ y / 3) % 2,
 

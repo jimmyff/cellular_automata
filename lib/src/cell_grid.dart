@@ -43,7 +43,8 @@ class CellGrid<T> extends ListBase<T> {
         this.height = (width != null && width > 0 && source != null)
             ? source.length ~/ width
             : 0 {
-    if (width * height == 0) {} else {}
+    if (width * height == 0) {
+    } else {}
   }
 
   @override
@@ -60,6 +61,13 @@ class CellGrid<T> extends ListBase<T> {
   @override
   void operator []=(int index, T value) {
     _source[index] = value;
+  }
+
+  // operator +(CellGrid r) {
+  // }
+  CellGrid combine(CellGrid n) {
+    for (var i = 0, l = n.length; i < l; i++)
+      if (n[i] != null) _source[i] = n[i];
   }
 
   // TODO: test
