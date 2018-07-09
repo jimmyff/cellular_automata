@@ -1,9 +1,8 @@
-import 'package:logging/logging.dart';
-
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/src/renderers/_ca_renderer.dart';
 
-final _log = new Logger('cellular_automata.renderers.ascii');
+// import 'package:logging/logging.dart';
+// final _log = new Logger('cellular_automata.renderers.ascii');
 
 class AsciiRenderer extends CARenderer {
   AsciiRenderer();

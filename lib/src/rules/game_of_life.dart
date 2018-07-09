@@ -5,27 +5,27 @@ import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 
 enum GameOfLifeStates {
-  DEAD,
-  ALIVE,
-  DEAD_UNDER_POPULATED,
-  DEAD_OVER_POPULATED,
-  ALIVE_BORN
+  alive,
+  aliveBorn,
+  dead,
+  deadUnderPopulated,
+  deadOverPopulated,
 }
 
-class GameOfLife extends CARules {
+class GameOfLife extends CARules<GameOfLifeStates> {
   // transforms the complex state in to simple alive/dead for computation
   final Map<GameOfLifeStates, int> stateValue = {
-    GameOfLifeStates.ALIVE: 1,
-    GameOfLifeStates.ALIVE_BORN: 1,
-    GameOfLifeStates.DEAD: 0,
-    GameOfLifeStates.DEAD_UNDER_POPULATED: 0,
-    GameOfLifeStates.DEAD_OVER_POPULATED: 0,
+    GameOfLifeStates.alive: 1,
+    GameOfLifeStates.aliveBorn: 1,
+    GameOfLifeStates.dead: 0,
+    GameOfLifeStates.deadUnderPopulated: 0,
+    GameOfLifeStates.deadOverPopulated: 0,
   };
 
   @override
   CellGrid<bool> gridActivity(CellGrid grid) =>
       grid.activateStatesMooresNeighbors(
-          [GameOfLifeStates.ALIVE_BORN, GameOfLifeStates.ALIVE], wrap);
+          [GameOfLifeStates.aliveBorn, GameOfLifeStates.alive], wrap);
 
   @override
   GameOfLifeStates calculateState(int x, int y, CellGrid grid) {
@@ -38,17 +38,17 @@ class GameOfLife extends CARules {
         neighborhood.fold(0, (a, GameOfLifeStates b) => a + stateValue[b]);
 
     switch (currentState) {
-      case GameOfLifeStates.ALIVE:
-      case GameOfLifeStates.ALIVE_BORN:
-        if (sum < 2) return GameOfLifeStates.DEAD_UNDER_POPULATED;
-        if ([2, 3].contains(sum)) return GameOfLifeStates.ALIVE;
-        if (sum > 3) return GameOfLifeStates.DEAD_OVER_POPULATED;
+      case GameOfLifeStates.alive:
+      case GameOfLifeStates.aliveBorn:
+        if (sum < 2) return GameOfLifeStates.deadUnderPopulated;
+        if ([2, 3].contains(sum)) return GameOfLifeStates.alive;
+        if (sum > 3) return GameOfLifeStates.deadOverPopulated;
         break;
 
-      case GameOfLifeStates.DEAD:
-      case GameOfLifeStates.DEAD_UNDER_POPULATED:
-      case GameOfLifeStates.DEAD_OVER_POPULATED:
-        if (sum == 3) return GameOfLifeStates.ALIVE_BORN;
+      case GameOfLifeStates.dead:
+      case GameOfLifeStates.deadUnderPopulated:
+      case GameOfLifeStates.deadOverPopulated:
+        if (sum == 3) return GameOfLifeStates.aliveBorn;
     }
     return currentState;
   }

@@ -1,8 +1,7 @@
 /// Has a history of generations, process the rules & generators,
 /// checks for stability (repeating patterns of activity)
-library cellular_automata.simulator;
+library cellular_automata.automaton;
 
-import 'dart:async';
 import 'package:logging/logging.dart';
 
 import 'package:cellular_automata/cellular_automata.dart';

@@ -1,11 +1,12 @@
 /// This manages the running and timing of Cellular Automata rules
 library cellular_automata.scene;
 
-import 'dart:core';
 import 'dart:async';
-import 'package:logging/logging.dart';
+import 'dart:core';
 
 import 'package:cellular_automata/cellular_automata.dart';
+import 'package:logging/logging.dart';
+
 export 'package:cellular_automata/src/util/timer.dart';
 
 final _log = new Logger('cellular_automata.player');
@@ -20,7 +21,7 @@ class Scene<PaletteType> {
   final Duration _frameDuration;
 
   int get generationCounter => _automata.values.first.generationCounter;
-  get fps => _fps.round();
+  int get fps => _fps.round();
   num _fps = 0;
   int width = 32;
   int height = 32;
@@ -83,10 +84,10 @@ class Scene<PaletteType> {
     _automata[reference ?? "automaton:${_automata.length}"] = automaton;
   }
 
-  void start({Duration delay}) async {
+  Future start({Duration delay}) async {
     _onPrepare.add(++_automataCount);
     await new Future.delayed(const Duration(milliseconds: 10));
-    initTimer(_frameDuration, delay);
+    await initTimer(_frameDuration, delay);
     _paintScene();
   }
 
@@ -110,10 +111,10 @@ class Scene<PaletteType> {
     _paintScene();
   }
 
-  Future<CellGrid> stepForward({bool changesOnly}) async {
+  void stepForward({bool changesOnly}) {
     if (_timerSubscription != null && !_timerSubscription.isPaused)
       _timerSubscription.pause();
-    return await _tick();
+    return _tick();
   }
 
   void stepBack() {
@@ -137,9 +138,10 @@ class Scene<PaletteType> {
     final paintedScene = new CellGrid<PaletteType>(width, height);
     final automatas = _automata.values.toList();
 
-    for (int i = 0, l = automatas.length; i < l; i++) {
+    final l = automatas.length;
+    for (int i = 0; i < l; i++)
       paintedScene.combine(automatas[i].paint(fullRefresh: fullRefresh));
-    }
+
     return paintedScene;
   }
 

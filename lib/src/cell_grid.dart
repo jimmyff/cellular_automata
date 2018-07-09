@@ -5,9 +5,8 @@ import 'dart:collection';
 import 'dart:core';
 import 'dart:math' as math;
 
-import 'package:logging/logging.dart';
-
-final _log = new Logger('cellular_automata.cell_grid');
+// import 'package:logging/logging.dart';
+// final _log = new Logger('cellular_automata.cell_grid');
 
 // Modified array_2d, original class by: @kevmoo
 // https://github.com/dart-lang/sample-pop_pop_win/blob/master/lib/src/array_2d.dart
@@ -65,9 +64,9 @@ class CellGrid<T> extends ListBase<T> {
 
   // operator +(CellGrid r) {
   // }
-  CellGrid combine(CellGrid n) {
-    for (var i = 0, l = n.length; i < l; i++)
-      if (n[i] != null) _source[i] = n[i];
+  void combine(CellGrid n) {
+    final l = n.length;
+    for (var i = 0; i < l; i++) if (n[i] != null) _source[i] = n[i];
   }
 
   // TODO: test
@@ -156,7 +155,7 @@ class CellGrid<T> extends ListBase<T> {
   }
 
   List<int> getAdjacentIndices(int x, int y) {
-    final List<int> adj = new List<int>();
+    final List<int> adj = <int>[];
 
     for (int k = math.max(0, y - 1); k < math.min(height, (y + 2)); k++) {
       for (int j = math.max(0, x - 1); j < math.min(width, (x + 2)); j++) {

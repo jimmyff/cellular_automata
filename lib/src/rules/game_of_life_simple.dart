@@ -4,7 +4,7 @@ library cellular_automata.rules.game_of_life_simple;
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 
-class GameOfLifeSimple extends CARules {
+class GameOfLifeSimple extends CARules<bool> {
   @override
   CellGrid<bool> gridActivity(CellGrid grid) =>
       grid.activateStatesMooresNeighbors([true], wrap);

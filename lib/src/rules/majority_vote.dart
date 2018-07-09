@@ -1,11 +1,11 @@
 /// Implementation of a Majority voting CA
 library cellular_automata.rules.majority_vote;
 
+import 'dart:math' as math;
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
-import 'dart:math' as math;
 
-class MajorityVote extends CARules {
+class MajorityVote extends CARules<bool> {
   @override
   CellGrid<bool> gridActivity(CellGrid grid) {
     final o = new CellGrid<bool>(grid.width, grid.height, false);
@@ -33,8 +33,8 @@ class MajorityVote extends CARules {
     final List<bool> neighborhood =
         grid.getNeighborhood(x, y, wrap, defaultState);
 
-    for (int i = 0, l = neighborhood.length; i < l; i++)
-      distribution[neighborhood[i]]++;
+    final l = neighborhood.length;
+    for (int i = 0; i < l; i++) distribution[neighborhood[i]]++;
 
     // At the moment Majority Vote is type bool so we won't itterate
     // in the future we may want to have have more than 2 states

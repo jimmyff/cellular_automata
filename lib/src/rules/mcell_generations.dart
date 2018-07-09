@@ -4,7 +4,7 @@ library cellular_automata.rules.mcell.generations;
 import 'package:cellular_automata/src/rules/_ca_rules.dart';
 import 'package:cellular_automata/cellular_automata.dart';
 
-class MCellGenerations extends CARules {
+class MCellGenerations extends CARules<int> {
   /// survival requirement
   List<int> neighborsToSurvive;
 
@@ -23,16 +23,10 @@ class MCellGenerations extends CARules {
     final match = exp.firstMatch(config);
 
     return new MCellGenerations(
-      neighborsToSurvive: match
-          .group(1)
-          .split('')
-          .map((s) => int.parse(s))
-          .toList(growable: false),
-      neighborsForBirth: match
-          .group(2)
-          .split('')
-          .map((s) => int.parse(s))
-          .toList(growable: false),
+      neighborsToSurvive:
+          match.group(1).split('').map(int.parse).toList(growable: false),
+      neighborsForBirth:
+          match.group(2).split('').map(int.parse).toList(growable: false),
       stateCount: int.parse(match.group(3)),
     );
   }

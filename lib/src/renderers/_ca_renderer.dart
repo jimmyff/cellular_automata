@@ -5,9 +5,8 @@ abstract class CARenderer {
   // TODO: this should be dynamic but causes problems with stagexl implementation
   void render<T>(CellGrid<T> renderData);
 
-  void applyPaletteAndRender<T, S>(CellGrid<T> snapshot, Map<T, S> palette) {
-    return render<S>(applyPalette<T, S>(snapshot, palette));
-  }
+  void applyPaletteAndRender<T, S>(CellGrid<T> snapshot, Map<T, S> palette) =>
+      render<S>(applyPalette<T, S>(snapshot, palette));
 
   CellGrid<S> applyPalette<T, S>(CellGrid<T> snapshot, Map<T, S> palette) {
     final output = new CellGrid<S>(snapshot.width, snapshot.height);
