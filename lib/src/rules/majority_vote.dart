@@ -33,8 +33,8 @@ class MajorityVote extends CARules<bool> {
     final List<bool> neighborhood =
         grid.getNeighborhood(x, y, wrap, defaultState);
 
-    final l = neighborhood.length;
-    for (int i = 0; i < l; i++) distribution[neighborhood[i]]++;
+    for (int i = 0, l = neighborhood.length; i < l; i++)
+      distribution[neighborhood[i]]++;
 
     // At the moment Majority Vote is type bool so we won't itterate
     // in the future we may want to have have more than 2 states

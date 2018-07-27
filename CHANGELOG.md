@@ -7,6 +7,7 @@
 - `Player` renamed `Scene`
 - `Simulator` renamed `Automaton`
 - `onRender` renamed `onPaint`
+- `SimulationCompleteReason` renamed `SceneCompleteReason`
 - `onPaintFull` now available which will paint a full scene every generation. Note: This is a not as performant as `onPaint` which will only paints the changes in a scene
 - `AsciiRenderer` added. This is a very simple text based renderer, used in the examples.
 - `onPrepare` fired before scene starts running. This is when a generator could be used to seed the automaton.

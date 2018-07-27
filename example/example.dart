@@ -1,18 +1,18 @@
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/rules.dart';
-import 'package:cellular_automata/src/renderers/ascii_renderer.dart';
+import 'package:cellular_automata/renderer_ascii.dart';
 
-// Simple example of cellular_automata.
+// Simple example showing the 'Brian Brain' automaton.
 // For prettier outputs see the platform specific renderers
-// Run in terminal with command: pub run example/majority_vote.dart
+// Run in terminal with command: pub run example/example.dart
 void main() {
   final width = 48;
   final height = 22;
 
   final palette = new Map<BriansBrainStates, String>.from({
-    BriansBrainStates.OFF: '_',
-    BriansBrainStates.DYING: 'x',
-    BriansBrainStates.ON: 'O'
+    BriansBrainStates.dead: '_',
+    BriansBrainStates.dying: 'x',
+    BriansBrainStates.living: 'O'
   });
 
   final AsciiRenderer renderer = new AsciiRenderer();
@@ -29,28 +29,23 @@ void main() {
             automaton: new Automaton<BriansBrainStates, String>(
           width: width,
           height: height,
-          defaultState: BriansBrainStates.OFF,
+          defaultState: BriansBrainStates.dead,
           palette: palette,
           wrap: true,
           rules: new BriansBrain(),
         )..applyGenerator(new MathematicalGenerator<BriansBrainStates>(
-                type: MathematicalGenerators.RANDOM,
-                valueTrue: BriansBrainStates.ON,
-                valueFalse: BriansBrainStates.OFF)));
+                type: MathematicalGenerators.random,
+                valueTrue: BriansBrainStates.living,
+                valueFalse: BriansBrainStates.dead)));
     })
     ..onFullPaint.listen((CellGrid<String> snapshot) {
       renderer
         ..clearConsole()
         ..render(snapshot);
-
-      print('');
-      print('Rules: Brian\'s Brain');
-      print('Generation: ${scene.generationCounter}');
-      print('');
     })
-    ..onComplete.listen((SimulationCompleteReason s) {
+    ..onComplete.listen((SceneCompleteReason s) {
       scene.stop();
-      print('All done! Stable scene detected.');
+      print('All done! (Generation ${scene.generationCounter})');
     })
     ..start();
 }

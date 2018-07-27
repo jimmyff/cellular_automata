@@ -65,8 +65,8 @@ class CellGrid<T> extends ListBase<T> {
   // operator +(CellGrid r) {
   // }
   void combine(CellGrid n) {
-    final l = n.length;
-    for (var i = 0; i < l; i++) if (n[i] != null) _source[i] = n[i];
+    for (int i = 0, l = n.length; i < l; i++)
+      if (n[i] != null) _source[i] = n[i];
   }
 
   // TODO: test

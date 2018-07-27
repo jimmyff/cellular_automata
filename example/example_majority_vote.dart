@@ -1,6 +1,6 @@
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/rules.dart';
-import 'package:cellular_automata/src/renderers/ascii_renderer.dart';
+import 'package:cellular_automata/renderer_ascii.dart';
 
 // Simple example of cellular_automata.
 // For prettier outputs see the platform specific renderers
@@ -30,7 +30,7 @@ void main() {
           wrap: true,
           rules: new MajorityVote(),
         )..applyGenerator(new MathematicalGenerator<bool>(
-                type: MathematicalGenerators.RANDOM,
+                type: MathematicalGenerators.random,
                 valueTrue: true,
                 valueFalse: false)));
     })
@@ -44,7 +44,7 @@ void main() {
       print('Generation: ${scene.generationCounter}');
       print('');
     })
-    ..onComplete.listen((SimulationCompleteReason s) {
+    ..onComplete.listen((SceneCompleteReason s) {
       scene.stop();
       print('All done! Stable scene detected.');
     })

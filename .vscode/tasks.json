@@ -6,7 +6,7 @@
         {
             "label": "pub upgrade",
             "type": "shell",
-            "command": "/usr/local/Cellar/dart/2.0.0-dev.63.0/bin/pub upgrade",
+            "command": "pub upgrade",
             "group": "none",
             "presentation": {
                 "reveal": "always",
@@ -17,7 +17,7 @@
         {
             "label": "Example: Game of life",
             "type": "shell",
-            "command": "/usr/local/Cellar/dart/2.0.0-dev.63.0/bin/pub run example/game_of_life.dart",
+            "command": "pub run example/game_of_life.dart",
             "group": "none",
             "presentation": {
                 "reveal": "always",
@@ -28,7 +28,7 @@
         {
             "label": "Run tests",
             "type": "shell",
-            "command": "/usr/local/Cellar/dart/2.0.0-dev.63.0/bin/pub run test",
+            "command": "pub run test",
             "group": "test",
             "presentation": {
                 "reveal": "always",

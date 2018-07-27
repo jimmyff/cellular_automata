@@ -1,5 +1,7 @@
 import 'package:cellular_automata/cellular_automata.dart';
 
+enum RendererDisplayMode { fullscreen, fixed }
+
 /// Abstract renderer class, all renderers should extend this
 abstract class CARenderer {
   // TODO: this should be dynamic but causes problems with stagexl implementation

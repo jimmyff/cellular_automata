@@ -11,7 +11,7 @@ export 'package:cellular_automata/src/util/timer.dart';
 
 final _log = new Logger('cellular_automata.player');
 
-enum SimulationCompleteReason { stable, duration }
+enum SceneCompleteReason { stable, duration }
 
 class Scene<PaletteType> {
   final Map<String, Automaton> _automata = {};
@@ -40,9 +40,9 @@ class Scene<PaletteType> {
   Stream<CellGrid<PaletteType>> get onFullPaint => _onFullPaint.stream;
 
   // complete stream
-  final StreamController<SimulationCompleteReason> _onComplete =
-      new StreamController<SimulationCompleteReason>();
-  Stream<SimulationCompleteReason> get onComplete => _onComplete.stream;
+  final StreamController<SceneCompleteReason> _onComplete =
+      new StreamController<SceneCompleteReason>();
+  Stream<SceneCompleteReason> get onComplete => _onComplete.stream;
 
   int _automataCount = 0; // number of automatas played
   // complete stream
@@ -138,8 +138,7 @@ class Scene<PaletteType> {
     final paintedScene = new CellGrid<PaletteType>(width, height);
     final automatas = _automata.values.toList();
 
-    final l = automatas.length;
-    for (int i = 0; i < l; i++)
+    for (int i = 0, l = automatas.length; i < l; i++)
       paintedScene.combine(automatas[i].paint(fullRefresh: fullRefresh));
 
     return paintedScene;
@@ -182,7 +181,7 @@ class Scene<PaletteType> {
         generationCounter % (2000 / _frameDuration.inMilliseconds).round() == 0)
       _log.info('Gen: $generationCounter | '
           // 'Activity: ${_sim.activePercent}% | '
-          'FPS: $fps/${(1000/_timerDuration.inMilliseconds).round()}');
+          'FPS: $fps/${(1000 / _timerDuration.inMilliseconds).round()}');
 
     // check if scene is complete / stable...
     if (generationCounter % 20 == 0) {
@@ -192,7 +191,7 @@ class Scene<PaletteType> {
       });
 
       if (_maxAge != null && _maxAge < generationCounter)
-        _onComplete.add(SimulationCompleteReason.duration);
+        _onComplete.add(SceneCompleteReason.duration);
       else if (automataAreStable) {
         _stableCounter++;
 
@@ -205,8 +204,7 @@ class Scene<PaletteType> {
         // based on percentage broadcast as stable
         if ((activityPercent < 5) ||
             (activityPercent < 10 && _stableCounter > 5) ||
-            (_stableCounter > 8))
-          _onComplete.add(SimulationCompleteReason.stable);
+            (_stableCounter > 8)) _onComplete.add(SceneCompleteReason.stable);
 
         _log.info(
             'Stable scene counter: x$_stableCounter World activity: $activityPercent%');

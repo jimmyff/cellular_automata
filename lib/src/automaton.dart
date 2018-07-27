@@ -129,6 +129,7 @@ class Automaton<CellType, PaletteType> {
 
   /// Apply a generator and create a new generation
   void applyGenerator(CAGenerator generator) {
+    _log.info('Applying generator ${width}x$height');
     newGeneration(generator.generate(width, height));
   }
 }

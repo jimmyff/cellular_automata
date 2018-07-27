@@ -1,6 +1,6 @@
 import 'package:cellular_automata/cellular_automata.dart';
 import 'package:cellular_automata/rules.dart';
-import 'package:cellular_automata/src/renderers/ascii_renderer.dart';
+import 'package:cellular_automata/renderer_ascii.dart';
 
 // Simple example of cellular_automata.
 // For prettier outputs see the platform specific renderers
@@ -10,11 +10,11 @@ void main() {
   final height = 22;
 
   final palette = new Map<GameOfLifeStates, String>.from({
-    GameOfLifeStates.DEAD: ' ',
-    GameOfLifeStates.DEAD_UNDER_POPULATED: '_',
-    GameOfLifeStates.DEAD_OVER_POPULATED: '_',
-    GameOfLifeStates.ALIVE: 'O',
-    GameOfLifeStates.ALIVE_BORN: '*',
+    GameOfLifeStates.dead: ' ',
+    GameOfLifeStates.deadUnderPopulated: '_',
+    GameOfLifeStates.deadOverPopulated: '_',
+    GameOfLifeStates.alive: 'O',
+    GameOfLifeStates.aliveBorn: '*',
   });
 
   final AsciiRenderer renderer = new AsciiRenderer();
@@ -31,14 +31,14 @@ void main() {
             automaton: new Automaton<GameOfLifeStates, String>(
           width: width,
           height: height,
-          defaultState: GameOfLifeStates.DEAD,
+          defaultState: GameOfLifeStates.dead,
           palette: palette,
           wrap: true,
           rules: new GameOfLife(),
         )..applyGenerator(new MathematicalGenerator<GameOfLifeStates>(
-                type: MathematicalGenerators.RANDOM,
-                valueTrue: GameOfLifeStates.ALIVE_BORN,
-                valueFalse: GameOfLifeStates.DEAD)));
+                type: MathematicalGenerators.random,
+                valueTrue: GameOfLifeStates.aliveBorn,
+                valueFalse: GameOfLifeStates.dead)));
     })
     ..onFullPaint.listen((CellGrid<String> snapshot) {
       renderer
@@ -50,7 +50,7 @@ void main() {
       print('Generation: ${scene.generationCounter}');
       print('');
     })
-    ..onComplete.listen((SimulationCompleteReason s) {
+    ..onComplete.listen((SceneCompleteReason s) {
       scene.stop();
       print('All done! Stable scene detected.');
     })
